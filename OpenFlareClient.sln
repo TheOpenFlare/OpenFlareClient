@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFlareClient", "OpenFlareClient\OpenFlareClient.csproj", "{F56B81A3-B331-46DE-9021-843BC03B752E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp.Xmpp", "..\Sharp.Xmpp\Sharp.Xmpp.csproj", "{9EA99E39-8C5C-4F69-9F3F-8E3074C518FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp.Xmpp", "Sharp.Xmpp\Sharp.Xmpp.csproj", "{9EA99E39-8C5C-4F69-9F3F-8E3074C518FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyIconWpf", "..\notifyicon-wpf\Hardcodet.NotifyIcon.Wpf\Source\NotifyIconWpf\NotifyIconWpf.csproj", "{7AC63864-7638-41C4-969C-D3197EF2BED9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyIconWpf", "notifyicon-wpf\Hardcodet.NotifyIcon.Wpf\Source\NotifyIconWpf\NotifyIconWpf.csproj", "{7AC63864-7638-41C4-969C-D3197EF2BED9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,8 +39,8 @@ Global
 		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Debug|x86.Build.0 = Debug|Any CPU
 		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|x86.ActiveCfg = Release|x86
-		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|x86.Build.0 = Release|x86
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|x86.ActiveCfg = Release|Any CPU
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

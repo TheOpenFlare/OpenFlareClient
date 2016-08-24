@@ -1,0 +1,8 @@
+[submodule "Sharp.Xmpp"]
+	path = Sharp.Xmpp
+	url = git@github.com:poqdavid/Sharp.Xmpp.git
+	branch = master
+[submodule "notifyicon-wpf"]
+	path = notifyicon-wpf
+url=git@github.com:poqdavid/notifyicon-wpf.git
+	branch = master
