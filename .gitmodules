@@ -4,5 +4,5 @@
 	branch = master
 [submodule "notifyicon-wpf"]
 	path = notifyicon-wpf
-url=git@github.com:poqdavid/notifyicon-wpf.git
+	url = git@github.com:poqdavid/notifyicon-wpf.git
 	branch = master
