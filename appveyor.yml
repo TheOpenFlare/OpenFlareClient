@@ -1,4 +1,6 @@
-version: 1.0.{build}
+version: OF-{build}
+image: Visual Studio 2015
+platform: x64
 build:
   project: OpenFlareClient.sln
-  verbosity: detailed
+  verbosity: minimal
