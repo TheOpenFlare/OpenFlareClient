@@ -1,0 +1,144 @@
+﻿<Window x:Class="OpenFlareClient.OF_MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenFlareClient"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="OpenFlare Client" Height="591.912" Width="329.411" Icon="{DynamicResource OpenFlareIcon}" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <DataTemplate x:Key="FriendsListTemplate">
+            <Grid>
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="OF_MenuList_Remove_Friend" Tag="{Binding Jid}" Header="Remove" Click="OF_MenuList_Remove_Friend_Click"/>
+                        <MenuItem x:Name="OF_MenuList_Accept_Friend" Tag="{Binding Jid}" Header="Accept" Click="OF_MenuList_Accept_Friend_Click" IsEnabled="{Binding Pending}"/>
+                        <MenuItem x:Name="OF_MenuList_SendFile" Tag="{Binding Jid}" Header="Send File"/>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Height="70" Width="70" Source="{Binding Avatar}" />
+                <StackPanel Grid.Column="1">
+                    <Label Height="Auto" Content="{Binding Name}"/>
+                    <Label Height="Auto" Content="{Binding Status}" Background="#FF0068FF" HorizontalContentAlignment="Center" />
+                    <Label Height="Auto" Content="{Binding StatusMessage}" Background="#CD0068FF" BorderBrush="#FF0068FF" BorderThickness="5"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="GroupListTemplate">
+            <Grid>
+                <Label Height="Auto" Content="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <tb:TaskbarIcon x:Name="OF_TaskbarIcon" ToolTipText="OpenFlare Client" IconSource="{DynamicResource OpenFlareIcon}" >
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="OF_NIMenu_Settings" Header="Settings" Click="OpenSettings"/>
+                    <MenuItem x:Name="OF_NIMenu_Exit" Header="Exit" Click="ExitApp"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+        <Image x:Name="OF_Avatar" Height="78" VerticalAlignment="Top" Width="81" HorizontalAlignment="Left" Source="{Binding XCD.Avatar, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" Margin="0,23,0,0"/>
+        <ComboBox x:Name="OF_Status" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Top" Margin="81,23,0,0" SelectionChanged="OF_Status_SelectionChanged" SelectedIndex="{Binding ISettings.Status, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}">
+            <ComboBoxItem Content="Offline"/>
+            <ComboBoxItem Content="Online"/>
+            <ComboBoxItem Content="Away"/>
+            <ComboBoxItem Content="Chat"/>
+            <ComboBoxItem Content="Dnd"/>
+            <ComboBoxItem Content="Xa"/>
+        </ComboBox>
+        <Canvas Margin="81,58,0,0" Height="18" VerticalAlignment="Top"  ClipToBounds="True" Name="OF_StatusCanvas" >
+            <TextBlock x:Name="OF_StatusText" Margin="81,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" LostFocus="OF_StatusText_LostFocus" Text="{Binding ISettings.StatusMessage,IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" Height="18"/>
+        </Canvas>
+        <TabControl x:Name="OF_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,106,0,0">
+            <TabItem x:Name="OF_Friends" Header="Friends">
+                <Grid Background="#FFE5E5E5">
+                    <ListView x:Name="OF_FriendsList" MouseDoubleClick="OF_FriendsList_MouseDoubleClick"
+                    DataContext="{Binding BuddiesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"
+					ItemsSource="{Binding}" ItemTemplate="{DynamicResource FriendsListTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <StackPanel Grid.Column="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Jid: " FontWeight="Bold" Grid.Column="0"/>
+                                                <TextBlock Text="{Binding Jid}" Grid.Column="1"/>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Subscription State: " FontWeight="Bold" Grid.Column="0"/>
+                                                <TextBlock Text="{Binding SubscriptionState}" Grid.Column="1"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="OF_Groups" Header="Groups">
+                <Grid Background="#FFE5E5E5">
+                    <ListView x:Name="OF_GroupsList" DataContext="{Binding AllGroupChats, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"
+					ItemsSource="{Binding AllGroupChats, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" ItemTemplate="{DynamicResource GroupListTemplate}" MouseDoubleClick="OF_GroupsList_MouseDoubleClick"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Menu x:Name="menu" IsMainMenu="True" VerticalAlignment="Top">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <MenuItem Header="_File" Grid.Column="0">
+                <MenuItem x:Name="OF_Menu_File_LogOut" Header="_Log Out" Click="OF_Menu_File_LogOut_Click" />
+                <Separator />
+                <MenuItem x:Name="OF_Menu_File_Exit" Header="_Exit" Click="ExitApp" />
+            </MenuItem>
+            <MenuItem Header="_Options" Grid.Column="1">
+                <MenuItem x:Name="OF_Menu_Options_Settings" Header="_Settings" Click="OF_Menu_Options_Settings_Click" />
+            </MenuItem>
+            <MenuItem Header="_Add" HorizontalAlignment="Center" Grid.Column="2">
+                <MenuItem x:Name="OF_Menu_Add_Friend" Header="_Friend" Click="OF_Menu_Add_Friend_Click" />
+            </MenuItem>
+            <MenuItem Header="_Help"  HorizontalAlignment="Right" Grid.Column="3">
+                <MenuItem x:Name="OF_Menu_Help_About" Header="_About" Click="OF_Menu_Help_About_Click" />
+            </MenuItem>
+        </Menu>
+        <Canvas Margin="81,83,0,0" Height="18" VerticalAlignment="Top"  ClipToBounds="True" Name="OF_TuneCanvas" >
+            <TextBlock x:Name="OF_TuneText" Margin="81,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding XCD.TuneText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" Height="18" />
+        </Canvas>
+        <Grid x:Name="OF_Login_Screen" Background="White" Visibility="Hidden">
+            <TextBox x:Name="OF_UserName" Height="23" Margin="10,198,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding ISettings.UserName, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" TextChanged="OF_UserName_TextChanged" />
+            <PasswordBox x:Name="OF_Password" Margin="10,226,10,0" VerticalAlignment="Top" PasswordChanged="OF_Password_PasswordChanged"/>
+            <Button x:Name="OF_Login" Content="Login" Margin="179,249,10,0" VerticalAlignment="Top" Click="OF_Login_Click"/>
+            <CheckBox x:Name="OF_AutoLogin" Content="Auto login" Margin="10,252,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="76" IsChecked="{Binding iSettings.AutoConnect, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}, UpdateSourceTrigger=Default}" Click="OF_AutoLogin_Click"/>
+            <Label x:Name="OF_XMPPSTATUS" Content="" Margin="10,272,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>

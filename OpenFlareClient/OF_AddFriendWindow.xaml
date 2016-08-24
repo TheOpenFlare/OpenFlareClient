@@ -1,0 +1,15 @@
+﻿<Window x:Class="OpenFlareClient.OF_AddFriendWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenFlareClient"
+        mc:Ignorable="d"
+        Title="Add Friend" Height="127.941" Width="408.088" WindowStyle="ToolWindow" ResizeMode="NoResize" Icon="{DynamicResource OpenFlareIcon}">
+    <Grid>
+        <TextBox x:Name="OF_Name_TextBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382"/>
+        <Button x:Name="OF_Add_Button" Content="Add" HorizontalAlignment="Left" Margin="10,38,0,7" Width="188" Click="OF_Add_Button_Click" IsDefault="True"/>
+        <Button x:Name="OF_Cancel_Button" Content="Cancel" Margin="203,39,10,7" Click="OF_Cancel_Button_Click" IsCancel="True"/>
+
+    </Grid>
+</Window>

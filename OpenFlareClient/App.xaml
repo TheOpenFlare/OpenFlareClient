@@ -1,0 +1,9 @@
+﻿<Application x:Class="OpenFlareClient.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:OpenFlareClient"
+             StartupUri="OF_MainWindow.xaml">
+    <Application.Resources>
+        <BitmapImage x:Key="OpenFlareIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\David\Documents\Visual Studio 2015\Projects\OpenFlareClient\OpenFlareClient\Resources\OpenFlare.ico"/>
+    </Application.Resources>
+</Application>

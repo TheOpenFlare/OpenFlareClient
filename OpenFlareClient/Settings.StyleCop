@@ -1,0 +1,35 @@
+<StyleCopSettings Version="105">
+  <GlobalSettings>
+    <BooleanProperty Name="AutoCheckForUpdate">False</BooleanProperty>
+    <CollectionProperty Name="RecognizedWords">
+      <Value>ms</Value>
+      <Value>msec</Value>
+      <Value>Winamp's</Value>
+      <Value>xaml</Value>
+      <Value>xmpp</Value>
+    </CollectionProperty>
+  </GlobalSettings>
+  <Analyzers>
+    <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
+      <Rules>
+        <Rule Name="ElementDocumentationMustBeSpelledCorrectly">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+      </Rules>
+      <AnalyzerSettings />
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+      <AnalyzerSettings>
+        <CollectionProperty Name="Hungarian">
+          <Value>h</Value>
+          <Value>l</Value>
+          <Value>lp</Value>
+          <Value>n</Value>
+          <Value>w</Value>
+        </CollectionProperty>
+      </AnalyzerSettings>
+    </Analyzer>
+  </Analyzers>
+</StyleCopSettings>
