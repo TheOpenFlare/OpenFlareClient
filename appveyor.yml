@@ -2,7 +2,5 @@ version: OF-{build}
 image: Visual Studio 2015
 platform: x64
 build:
-  project: OpenFlareClient.sln
+  project: OpenFlareClient/OpenFlareClient.csproj
   verbosity: minimal
-install:
-  git submodule update --init --recursive
