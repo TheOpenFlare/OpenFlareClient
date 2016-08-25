@@ -4,3 +4,5 @@ platform: x64
 build:
   project: OpenFlareClient.sln
   verbosity: minimal
+install:
+  git submodule update --init --recursive
