@@ -1,10 +1,12 @@
 version: 1.0.{build}
+image: Visual Studio 2015
 branches:
   only:
   - master
-configuration: Debug
-platform: x86
+configuration: Release
+platform: Any CPU
 build:
+  project: OpenFlareClient/OpenFlareClient.csproj
   verbosity: minimal
 install:
   git submodule update --init --recursive
