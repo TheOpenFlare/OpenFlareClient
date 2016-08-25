@@ -6,7 +6,9 @@ branches:
 configuration: Release
 platform: Any CPU
 build:
-  project: OpenFlareClient/OpenFlareClient.csproj
+  project: OpenFlareClient.sln
   verbosity: minimal
 install:
   git submodule update --init --recursive
+before_build:
+  - nuget restore
