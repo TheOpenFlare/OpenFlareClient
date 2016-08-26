@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:OpenFlareClient"
              StartupUri="OF_MainWindow.xaml">
     <Application.Resources>
-        <BitmapImage x:Key="OpenFlareIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\David\Documents\Visual Studio 2015\Projects\OpenFlareClient\OpenFlareClient\Resources\OpenFlare.ico"/>
+        <BitmapImage x:Key="OpenFlareIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources\OpenFlare.ico"/>
     </Application.Resources>
 </Application>
