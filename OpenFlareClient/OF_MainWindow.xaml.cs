@@ -313,6 +313,8 @@ namespace OpenFlareClient
             // Connects using the Resource name. The catch block will raise appropriate high level error codes
             try
             {
+                this.xc.Password = Settings.Password.UnsecureString();
+                this.xc.Username = Settings.UserName;
                 this.xc.Connect(this.resource); // Its not async, so we are waiting to return
                                                 // Set Status with Presence Online and Priority -1
                 this.xc.SetStatus(Availability.Online, null, 1);
@@ -607,62 +609,68 @@ namespace OpenFlareClient
         /// <returns>The return value is the result of the message processing and depends on the message sent.</returns>
         public IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == Win32.WMCOPYDATA)
+            try
             {
-                Win32.CopyDataStruct cp = (Win32.CopyDataStruct)Marshal.PtrToStructure(lParam, typeof(Win32.CopyDataStruct));
-                TuneInformation tif = new TuneInformation(null, null, null, 0, 0, null, null);
-
-                this.playerstatus = cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[1];
-                if (cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[0] != this.oldTrack)
+                if (msg == Win32.WMCOPYDATA)
                 {
-                    this.oldTrack = cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[0];
-                    TagLib.File file = TagLib.File.Create(this.oldTrack);
-                    this.title = XmlEscape(file.Tag.Title);
-                    this.artist = XmlEscape(file.Tag.FirstPerformer);
-                    this.track = XmlEscape(file.Tag.Track.ToString());
-                    this.length = file.Properties.Duration.Seconds;
-                    this.album = XmlEscape(file.Tag.Album);
+                    Win32.CopyDataStruct cp = (Win32.CopyDataStruct)Marshal.PtrToStructure(lParam, typeof(Win32.CopyDataStruct));
+                    TuneInformation tif = new TuneInformation(null, null, null, 0, 0, null, null);
+
+                    this.playerstatus = cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[1];
+                    if (cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[0] != this.oldTrack)
+                    {
+                        this.oldTrack = cp.LpData.Split(this.stringSeparators, StringSplitOptions.None)[0];
+                        TagLib.File file = TagLib.File.Create(this.oldTrack);
+                        this.title = XmlEscape(file.Tag.Title);
+                        this.artist = XmlEscape(file.Tag.FirstPerformer);
+                        this.track = XmlEscape(file.Tag.Track.ToString());
+                        this.length = file.Properties.Duration.Seconds;
+                        this.album = XmlEscape(file.Tag.Album);
+                    }
+
+                    switch (this.playerstatus)
+                    {
+                        case "STATUS:playing":
+                            this.playingmusic = true;
+                            break;
+
+                        case "STATUS:paused":
+                            this.playingmusic = false;
+
+                            break;
+
+                        case "STATUS:not_playing":
+                            this.playingmusic = false;
+                            break;
+
+                        default:
+                            this.playingmusic = false;
+                            break;
+                    }
+
+                    if (this.playingmusic)
+                    {
+                        tif = new TuneInformation(this.title, this.artist, this.track, this.length, 0, this.album, null);
+                        this.XmppClientData.MyTune = tif;
+                        this.XmppClientData.TuneText = XmlUnescape(this.artist) + " - " + XmlUnescape(this.title);
+                    }
+                    else
+                    {
+                        tif = new TuneInformation(null, null, null, 0, 0, null, null);
+                        this.XmppClientData.MyTune = tif;
+                        this.XmppClientData.TuneText = "Not Playing any music!";
+                    }
+
+                    //// MessageBox.Show(xArtist);
+
+                    if (this.xc.Connected)
+                    {
+                        this.xc.SetTune(tif);
+                    }
                 }
-
-                switch (this.playerstatus)
-                {
-                    case "STATUS:playing":
-                        this.playingmusic = true;
-                        break;
-
-                    case "STATUS:paused":
-                        this.playingmusic = false;
-
-                        break;
-
-                    case "STATUS:not_playing":
-                        this.playingmusic = false;
-                        break;
-
-                    default:
-                        this.playingmusic = false;
-                        break;
-                }
-
-                if (this.playingmusic)
-                {
-                    tif = new TuneInformation(this.title, this.artist, this.track, this.length, 0, this.album, null);
-                    this.XmppClientData.MyTune = tif;
-                    this.XmppClientData.TuneText = XmlUnescape(this.artist) + " - " + XmlUnescape(this.title);
-                }
-                else
-                {
-                    tif = new TuneInformation(null, null, null, 0, 0, null, null);
-                    this.XmppClientData.MyTune = tif;
-                    this.XmppClientData.TuneText = "Not Playing any music!";
-                }
-
-                //// MessageBox.Show(xArtist);
-
-                if (this.xc.Connected)
-                {
-                    this.xc.SetTune(tif);
-                }
+            }
+            catch (Exception)
+            {
             }
 
             return IntPtr.Zero;
@@ -734,7 +742,7 @@ namespace OpenFlareClient
         {
             try
             {
-                this.xc = new XmppClient(Settings.Server, Settings.UserName, Settings.Password.UnsecureString(), int.Parse(Settings.Port));
+                this.xc = new XmppClient(Settings.Server, int.Parse(Settings.Port));
                 this.xc.RosterUpdated += this.XC_RosterUpdated;
                 this.xc.MoodChanged += this.XC_MoodChanged;
                 this.xc.StatusChanged += this.XC_StatusChanged;

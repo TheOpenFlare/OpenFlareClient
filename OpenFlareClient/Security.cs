@@ -84,7 +84,7 @@ namespace OpenFlareClient
             {
                 if (encryptedMessage.IsNullOrEmpty())
                 {
-                    encryptedMessage = Encrypt("12345".SecureString());
+                    return string.Empty.SecureString();
                 }
 
                 if (encryptedMessage.IsNullOrWhiteSpace())
@@ -207,7 +207,7 @@ namespace OpenFlareClient
             {
                 if (secretMessage.IsNullOrEmpty())
                 {
-                    throw new ArgumentException("Secret Message Required!", "secretMessage");
+                    return string.Empty.SecureString();
                 }
 
                 var plainText = Encoding.UTF8.GetBytes(secretMessage.UnsecureString());
@@ -246,7 +246,7 @@ namespace OpenFlareClient
 
                 if (secretMessage == null || secretMessage.Length == 0)
                 {
-                    throw new ArgumentException("Secret Message Required!", "secretMessage");
+                    return null;
                 }
 
                 var generator = new Pkcs5S2ParametersGenerator();
@@ -285,7 +285,7 @@ namespace OpenFlareClient
 
                 if (secretMessage == null || secretMessage.Length == 0)
                 {
-                    throw new ArgumentException("Secret Message Required!", "secretMessage");
+                    return null;
                 }
 
                 ////Non-secret Payload Optional

@@ -1,0 +1,4 @@
+language: csharp
+solution: OpenFlareClient.sln
+install:
+  - nuget restore OpenFlareClient.sln
