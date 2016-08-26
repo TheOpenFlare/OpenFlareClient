@@ -258,19 +258,19 @@ namespace OpenFlareClient
                     }
                     else
                     {
-                        this.RestSetting();
+                        this.RestSettings();
                     }
                 }
                 else
                 {
-                    this.RestSetting();
+                    this.RestSettings();
                 }
             }
             catch (Exception)
             {
                 if (this.statuserrs < 100)
                 {
-                    this.RestSetting();
+                    this.RestSettings();
                 }
                 else
                 {
@@ -283,7 +283,7 @@ namespace OpenFlareClient
         /// <summary>
         /// Rests the settings in selected path.
         /// </summary>
-        public void RestSetting()
+        public void RestSettings()
         {
             this.SaveSetting();
             this.LoadSettings();
