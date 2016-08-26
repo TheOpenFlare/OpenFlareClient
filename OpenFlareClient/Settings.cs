@@ -62,6 +62,11 @@ namespace OpenFlareClient
         private string defaultUserName = string.Empty;
 
         /// <summary>
+        /// Number of errors for loading friends list to prevent loop
+        /// </summary>
+        private int statuserrs = 0;
+
+        /// <summary>
         /// Prevents a default instance of the Settings class from being created.
         /// </summary>
         private Settings()
@@ -239,28 +244,49 @@ namespace OpenFlareClient
         {
             try
             {
-                string json_string = File.ReadAllText(OpenFlareClient.OF_MainWindow.SettingPath);
-                if (Json.IsValid(json_string))
+                if (File.Exists(OpenFlareClient.OF_MainWindow.SettingPath))
                 {
-                    var s = new JsonSerializerSettings();
-                    s.NullValueHandling = NullValueHandling.Ignore;
-                    s.ObjectCreationHandling = ObjectCreationHandling.Replace; //// without this, you end up with duplicates.
+                    string json_string = File.ReadAllText(OpenFlareClient.OF_MainWindow.SettingPath);
+                    if (Json.IsValid(json_string))
+                    {
+                        var s = new JsonSerializerSettings();
+                        s.NullValueHandling = NullValueHandling.Ignore;
+                        s.ObjectCreationHandling = ObjectCreationHandling.Replace; //// without this, you end up with duplicates.
 
-                    //// s.TypeNameHandling = TypeNameHandling.Objects;
-                    OpenFlareClient.OF_MainWindow.Settings = JsonConvert.DeserializeObject<Settings>(json_string, s);
+                        //// s.TypeNameHandling = TypeNameHandling.Objects;
+                        OpenFlareClient.OF_MainWindow.Settings = JsonConvert.DeserializeObject<Settings>(json_string, s);
+                    }
+                    else
+                    {
+                        this.RestSetting();
+                    }
                 }
                 else
                 {
-                    this.SaveSetting();
-                    this.LoadSettings();
+                    this.RestSetting();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                System.Windows.MessageBox.Show("Error on setting load:" + Environment.NewLine + ex.Message);
-                this.SaveSetting();
-                this.LoadSettings();
+                if (this.statuserrs < 100)
+                {
+                    this.RestSetting();
+                }
+                else
+                {
+                    throw new System.Exception("Too many errors");
+                    ////Status_Errs = 0;
+                }
             }
+        }
+
+        /// <summary>
+        /// Rests the settings in selected path.
+        /// </summary>
+        public void RestSetting()
+        {
+            this.SaveSetting();
+            this.LoadSettings();
         }
 
         /// <summary>
