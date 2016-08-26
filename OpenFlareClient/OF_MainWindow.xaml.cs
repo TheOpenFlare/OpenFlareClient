@@ -11,8 +11,10 @@ namespace OpenFlareClient
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net.Security;
     using System.Reflection;
     using System.Runtime.InteropServices;
+    using System.Security.Cryptography.X509Certificates;
     using System.Threading;
     using System.Windows;
     using System.Windows.Controls;
@@ -170,7 +172,7 @@ namespace OpenFlareClient
             this.InitializeComponent();
 
             OF_Login_Screen.Visibility = Visibility.Visible;
-            OF_Password.Password = Settings.Password.UnsecureString();
+
             this.AllChats.CollectionChanged += this.AllChats_CollectionChanged;
             this.threadxmppconnect = new Thread(this.Connect);
             this.threadxmppload = new Thread(this.XmppLoad);
@@ -233,6 +235,19 @@ namespace OpenFlareClient
             encoder.Save(ms);
             var bmp = new System.Drawing.Bitmap(ms);
             return System.Drawing.Icon.FromHandle(bmp.GetHicon());
+        }
+
+        /// <summary>
+        /// Callback for validating certificate
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="certificate">Certificate object</param>
+        /// <param name="chain">X509Chain object</param>
+        /// <param name="sslPolicyErrors">SSL policy errors</param>
+        /// <returns>Returns true or false</returns>
+        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
         /// <summary>
@@ -315,6 +330,9 @@ namespace OpenFlareClient
             {
                 this.xc.Password = Settings.Password.UnsecureString();
                 this.xc.Username = Settings.UserName;
+
+                this.xc.Hostname = Settings.Server;
+
                 this.xc.Connect(this.resource); // Its not async, so we are waiting to return
                                                 // Set Status with Presence Online and Priority -1
                 this.xc.SetStatus(Availability.Online, null, 1);
@@ -742,7 +760,7 @@ namespace OpenFlareClient
         {
             try
             {
-                this.xc = new XmppClient(Settings.Server, int.Parse(Settings.Port));
+                this.xc = new XmppClient(Settings.Server, int.Parse(Settings.Port), true, new RemoteCertificateValidationCallback(ValidateServerCertificate));
                 this.xc.RosterUpdated += this.XC_RosterUpdated;
                 this.xc.MoodChanged += this.XC_MoodChanged;
                 this.xc.StatusChanged += this.XC_StatusChanged;
@@ -1207,6 +1225,7 @@ namespace OpenFlareClient
         /// <param name="e">RoutedEvent args</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            OF_Password.Password = Settings.Password.UnsecureString();
             HwndSource src = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
             src.AddHook(new HwndSourceHook(this.WindowProc));
             this.LeftToRightMarquee(this.OF_StatusCanvas, this.OF_StatusText);

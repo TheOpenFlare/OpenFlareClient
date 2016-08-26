@@ -110,6 +110,7 @@ namespace OpenFlareClient
 
             set
             {
+                this.PasswordS = string.Empty;
                 this.defaultPassword = Security.AES.Encrypt(value);
                 this.NotifyPropertyChanged();
             }
@@ -225,6 +226,7 @@ namespace OpenFlareClient
             set
             {
                 this.defaultPassword = value.SecureString();
+                value = string.Empty;
             }
         }
 
@@ -298,7 +300,6 @@ namespace OpenFlareClient
             s.ObjectCreationHandling = ObjectCreationHandling.Replace; //// without this, you end up with duplicates.
 
             File.WriteAllText(OpenFlareClient.OF_MainWindow.SettingPath, JsonConvert.SerializeObject(this, Formatting.Indented, s));
-            this.PasswordS = string.Empty;
         }
 
         /// <summary>

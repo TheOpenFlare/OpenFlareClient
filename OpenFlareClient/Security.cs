@@ -89,7 +89,7 @@ namespace OpenFlareClient
 
                 if (encryptedMessage.IsNullOrWhiteSpace())
                 {
-                    throw new ArgumentException("Encrypted Message Required!", "encryptedMessage");
+                    return string.Empty.SecureString();
                 }
 
                 var cipherText = Convert.FromBase64String(encryptedMessage.UnsecureString());
