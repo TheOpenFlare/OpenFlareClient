@@ -6,3 +6,7 @@
 	path = notifyicon-wpf
     url = https://github.com/TheOpenFlare/notifyicon-wpf.git
 	branch = master
+[submodule "OpenFlareSetup"]
+	path = OpenFlareSetup
+	url = https://github.com/TheOpenFlare/OpenFlareSetup.git
+	branch = master

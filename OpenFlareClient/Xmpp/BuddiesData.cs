@@ -5,9 +5,9 @@
 // <summary>This is the BuddiesData class.</summary>
 namespace OpenFlareClient.Xmpp
 {
-    using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -21,6 +21,11 @@ namespace OpenFlareClient.Xmpp
         private BitmapImage defaultAvatar = null;
 
         /// <summary>
+        /// Default for jid
+        /// </summary>
+        private Sharp.Xmpp.Jid defaultJid;
+
+        /// <summary>
         /// Default for user tune
         /// </summary>
         private Sharp.Xmpp.Extensions.TuneInformation defaultmyTune;
@@ -29,6 +34,11 @@ namespace OpenFlareClient.Xmpp
         /// Default for name
         /// </summary>
         private string defaultName = "Loading...";
+
+        /// <summary>
+        /// Default for pending
+        /// </summary>
+        private bool defaultPending;
 
         /// <summary>
         /// Default for status
@@ -41,24 +51,19 @@ namespace OpenFlareClient.Xmpp
         private string defaultStatusMessage = "...";
 
         /// <summary>
+        /// Default for SubscriptionState
+        /// </summary>
+        private string defaultSubscriptionState = "None";
+
+        /// <summary>
         /// Default for tune text
         /// </summary>
         private string defaultTuneText = "Not Playing any music!";
 
         /// <summary>
-        /// Default for jid
+        /// Default for tune text visibility
         /// </summary>
-        private Sharp.Xmpp.Jid defaultJid;
-
-        /// <summary>
-        /// Default for pending
-        /// </summary>
-        private bool defaultPending;
-
-        /// <summary>
-        /// Default for SubscriptionState
-        /// </summary>
-        private string defaultSubscriptionState = "None";
+        private Visibility defaultTuneTextVisibility = Visibility.Collapsed;
 
         /// <summary>
         /// PropertyChanged event for BuddiesData
@@ -214,6 +219,23 @@ namespace OpenFlareClient.Xmpp
             set
             {
                 this.defaultTuneText = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets tune text Visibility
+        /// </summary>
+        public Visibility TuneTextVisibility
+        {
+            get
+            {
+                return this.defaultTuneTextVisibility;
+            }
+
+            set
+            {
+                this.defaultTuneTextVisibility = value;
                 this.NotifyPropertyChanged();
             }
         }

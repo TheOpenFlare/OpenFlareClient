@@ -143,7 +143,8 @@ namespace OpenFlareClient.Xmpp
             else
             {
                 this.dispatcherUIThread.Invoke(DispatcherPriority.Send, new InsertItemCallback(this.InsertItem), index, new object[] { item });
-            }
+            } 
+            this.Chats_CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
 
         /// <summary>

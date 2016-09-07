@@ -5,26 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="Settings" Height="175.408" Width="661.073" Icon="{DynamicResource OpenFlareIcon}" MaxHeight="{Binding Height, RelativeSource={RelativeSource Self}}" MaxWidth="{Binding Width, RelativeSource={RelativeSource Self}}" MinHeight="{Binding Height, RelativeSource={RelativeSource Self}}" MinWidth="{Binding Width, RelativeSource={RelativeSource Self}}">
+        Title="Settings" Height="327.408" Width="515.073" Icon="{DynamicResource OpenFlareIcon}">
     <Grid>
-        <Button x:Name="OF_Button_Cancel" Content="Cancel" Margin="568,114,0,0" Click="OF_Button_Cancel_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75"/>
-        <Button x:Name="OF_Button_Save" Content="Save" Margin="488,114,0,0" Click="OF_Button_Save_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75"/>
-        <Button x:Name="OF_Button_Apply" Content="Apply" Margin="408,114,0,0" Click="OF_Button_Apply_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75"/>
-        <GroupBox x:Name="OF_User_GroupBox" Header="User: " VerticalAlignment="Top" Height="107" Margin="374,0,5,0">
-            <Grid>
-                <TextBox x:Name="OF_UserName_Box" Height="23" Margin="75,13,10,0" TextWrapping="Wrap" Text="{Binding Settings.UserName, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="OF_Pass_Box" Height="23" VerticalAlignment="Top" Margin="75,44,10,0" PasswordChanged="OF_Pass_Box_PasswordChanged"/>
-                <Label x:Name="OF_Name_Label" Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="OF_Password_Label" Content="Password" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox x:Name="OF_Server_GroupBox" Header="Server" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="364" Height="107">
-            <Grid>
-                <TextBox x:Name="OF_Server_Box" HorizontalAlignment="Left" Height="23" Margin="10,8,0,0" TextWrapping="Wrap" Text="{Binding Settings.Server, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top" Width="244"/>
-                <TextBox x:Name="OF_ServerPort_Box" HorizontalAlignment="Left" Height="23" Margin="259,8,0,0" TextWrapping="Wrap" Text="{Binding Settings.Port, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top" Width="85"/>
-            </Grid>
-        </GroupBox>
-
-
+        <TabControl x:Name="OF_Setting_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,46">
+            <TabItem x:Name="OF_General" Header="General">
+                <Grid>
+                    <GroupBox x:Name="OF_User_GroupBox" Header="User: " VerticalAlignment="Top" Height="107" Margin="10,10,0,0" HorizontalAlignment="Left" Width="351">
+                        <Grid>
+                            <TextBox x:Name="OF_UserName_Box" Height="23" Margin="75,13,10,0" TextWrapping="Wrap" Text="{Binding Settings.UserName, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top"/>
+                            <PasswordBox x:Name="OF_Pass_Box" Height="23" VerticalAlignment="Top" Margin="75,44,10,0" PasswordChanged="OF_Pass_Box_PasswordChanged"/>
+                            <Label x:Name="OF_Name_Label" Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                            <Label x:Name="OF_Password_Label" Content="Password" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="OF_Server" Header="Server">
+                <Grid>
+                    <GroupBox x:Name="OF_Server_GroupBox" Header="Server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="364" Height="107">
+                        <Grid>
+                            <TextBox x:Name="OF_Server_Box" HorizontalAlignment="Left" Height="23" Margin="10,8,0,0" TextWrapping="Wrap" Text="{Binding Settings.Server, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top" Width="244"/>
+                            <TextBox x:Name="OF_ServerPort_Box" HorizontalAlignment="Left" Height="23" Margin="259,8,0,0" TextWrapping="Wrap" Text="{Binding Settings.Port, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top" Width="85"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid Height="41" VerticalAlignment="Bottom">
+            <Button x:Name="OF_Button_Cancel" Content="Cancel" Margin="0,12,6,9" Click="OF_Button_Cancel_Click" HorizontalAlignment="Right" Width="75"/>
+            <Button x:Name="OF_Button_Save" Content="Save" Margin="0,0,86,9" Click="OF_Button_Save_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
+            <Button x:Name="OF_Button_Apply" Content="Apply" Margin="0,0,166,9" Click="OF_Button_Apply_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
+        </Grid>
     </Grid>
 </Window>

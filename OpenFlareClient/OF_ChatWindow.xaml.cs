@@ -7,6 +7,7 @@
 // </summary>
 namespace OpenFlareClient
 {
+    using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
@@ -20,7 +21,7 @@ namespace OpenFlareClient
         /// <summary>
         /// For chats
         /// </summary>
-        private Xmpp.Chats<Xmpp.ChatData> xmppChats;
+        public Xmpp.Chats<Xmpp.ChatData> xmppChats;
 
         /// <summary>
         /// For jid
@@ -79,6 +80,20 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// Things to do when chat is updated
+        /// </summary>
+        public void ChatUpdated()
+        {
+            try
+            {
+                OF_ChatBox.ScrollIntoView(OF_ChatBox.Items[(OF_ChatBox.Items.Count - 1)]);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /// <summary>
         /// SourceUpdated event for OF_ChatBox
         /// </summary>
         /// <param name="sender">Sender object</param>
@@ -113,7 +128,6 @@ namespace OpenFlareClient
         private void OF_SendButton_Click(object sender, RoutedEventArgs e)
         {
         }
-
         /// <summary>
         /// CollectionChanged event for XmppChats
         /// </summary>

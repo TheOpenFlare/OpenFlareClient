@@ -66,6 +66,6 @@
             </ListView.ItemTemplate>
         </ListView>
         <TextBox x:Name="OF_MsgBox" Margin="0,0,80,0" TextWrapping="Wrap" Height="71" VerticalAlignment="Bottom" TextChanged="OF_MsgBox_TextChanged" KeyDown="OF_MsgBox_KeyDown"/>
-        <Button x:Name="OF_SendButton" Content="Button" HorizontalAlignment="Right" Width="80" Height="71" VerticalAlignment="Bottom" Click="OF_SendButton_Click"/>
+        <Button x:Name="OF_SendButton" Content="Send" HorizontalAlignment="Right" Width="80" Height="71" VerticalAlignment="Bottom" Click="OF_SendButton_Click"/>
     </Grid>
 </Window>

@@ -26,6 +26,7 @@ namespace OpenFlareClient
     using System.Windows.Media.Imaging;
     using System.Xml;
     using Gat.Controls;
+    using Microsoft.Win32;
     using Sharp.Xmpp;
     using Sharp.Xmpp.Client;
     using Sharp.Xmpp.Extensions;
@@ -157,18 +158,12 @@ namespace OpenFlareClient
             Security.Generator.GenerateHWIDValue();
             Settings = Settings.CreateNewSettings();
             Settings.LoadSettings();
-
             this.XmppClientData = new Xmpp.ClientData();
             this.BuddiesList = new Xmpp.Buddies<Xmpp.BuddiesData>();
             this.AllChats = new Xmpp.Chats<Xmpp.ChatData>();
             this.AllGroupChats = new Xmpp.GroupChats<Xmpp.GroupChatData>();
 
-            Attribute attr = Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyProductAttribute));
-            string name = attr != null ? ((AssemblyProductAttribute)attr).Product : "OpenFlare";
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
             BindingOperations.EnableCollectionSynchronization(this.AllChats, this.allchatsLock);
-
             this.InitializeComponent();
 
             OF_Login_Screen.Visibility = Visibility.Visible;
@@ -184,6 +179,41 @@ namespace OpenFlareClient
                 OF_Login.IsEnabled = false;
                 this.threadxmppconnect.SmartStart(this.Connect);
             }
+        }
+
+        private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        private void CanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        private void CloseWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        private void MaximizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        private void MinimizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void RestoreWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
         }
 
         /// <summary>
@@ -546,6 +576,7 @@ namespace OpenFlareClient
                 this.AddChat(jid.GetBareJid(), xmppChatMsg);
                 chatWindow.OF_ChatBox.ItemsSource = this.AllChats.Single(j => j.Jid.GetBareJid() == jid.GetBareJid()).Msgs;
                 chatWindow.OF_ChatBox.Items.Refresh();
+                chatWindow.ChatUpdated();
                 chatWindow.OF_MsgBox.Text = string.Empty;
             }
         }
@@ -600,6 +631,20 @@ namespace OpenFlareClient
             if (this.xc.Connected)
             {
                 this.xc.SetStatus(this.GetFromString(s.Content.ToString()), OF_StatusText.Text, 1);
+            }
+        }
+
+        /// <summary>
+        /// To set the status
+        /// </summary>
+        /// <param name="status">The status message</param>
+        public void SetStatus(string status)
+        {
+            ComboBoxItem s = (ComboBoxItem)OF_Status.SelectedItem;
+            if (this.xc.Connected)
+            {
+                OF_StatusText.Text = status;
+                this.xc.SetStatus(this.GetFromString(s.Content.ToString()), status, 1);
             }
         }
 
@@ -678,7 +723,6 @@ namespace OpenFlareClient
                         this.XmppClientData.MyTune = tif;
                         this.XmppClientData.TuneText = "Not Playing any music!";
                     }
-
                     //// MessageBox.Show(xArtist);
 
                     if (this.xc.Connected)
@@ -917,6 +961,7 @@ namespace OpenFlareClient
                         try
                         {
                             CW.OF_ChatBox.ItemsSource = AllChats.Single(j => j.Jid.GetBareJid() == xmppBuddiesData.Jid.GetBareJid()).Msgs;
+                            CW.ChatUpdated();
                         }
                         catch (Exception)
                         {
@@ -1011,6 +1056,42 @@ namespace OpenFlareClient
         {
             OF_SettingsWindow set = new OF_SettingsWindow();
             set.ShowDialog();
+        }
+
+        /// <summary>
+        /// Add avatar
+        /// </summary>
+        /// <param name="sender">The sender object</param>
+        /// <param name="e">RoutedEvent args</param>
+        private void OF_Menu_Set_Avatar_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog selectAvatarDialog = new OpenFileDialog();
+            selectAvatarDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+            selectAvatarDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            selectAvatarDialog.Multiselect = false;
+            if (selectAvatarDialog.ShowDialog() == true)
+            {
+                this.xc.SetvCardAvatar(selectAvatarDialog.FileName);
+            }
+        }
+
+        /// <summary>
+        /// Sets status for xmpp
+        /// </summary>
+        /// <param name="sender">The sender object</param>
+        /// <param name="e">RoutedEvent args</param>
+        private void OF_Menu_Set_Status_Click(object sender, RoutedEventArgs e)
+        {
+            this.Dispatcher.Invoke((Action)(() =>
+            {
+                OF_SetStatusWindow OFSTW = new OF_SetStatusWindow();
+                OFSTW.ShowDialog();
+                if (OFSTW.DialogResult.HasValue && OFSTW.DialogResult.Value)
+                {
+                    Settings.SaveSetting();
+                    this.SetStatus(OFSTW.Status);
+                }
+            }));
         }
 
         /// <summary>
@@ -1333,12 +1414,14 @@ namespace OpenFlareClient
                         CW.OF_MsgBox.KeyDown += MsgBox_KeyDown;
                         CW.OF_ChatBox.ItemsSource = AllChats.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Msgs;
                         CW.OF_ChatBox.Items.Refresh();
+                        CW.ChatUpdated();
                     }
                     else
                     {
                         OF_ChatWindow chatWindow = Application.Current.Windows.OfType<OF_ChatWindow>().Single(x => ((Sharp.Xmpp.Jid)x.Tag).GetBareJid() == e.Jid.GetBareJid());
                         chatWindow.OF_ChatBox.ItemsSource = AllChats.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Msgs;
                         chatWindow.OF_ChatBox.Items.Refresh();
+                        chatWindow.ChatUpdated();
                     }
                 }));
             }
@@ -1445,6 +1528,16 @@ namespace OpenFlareClient
                 if (e.Jid.GetBareJid() != this.XmppClientData.Jid.GetBareJid())
                 {
                     this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).MyTune = e.Information;
+
+                    if (e.Stop)
+                    {
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Visible;
+                    }
+
                     this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneText = e.Information.Artist + " - " + e.Information.Title;
                 }
             }));
