@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Simple Styles.xaml"/>
+                <ResourceDictionary Source="Resources/OF_Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BitmapImage x:Key="OpenFlareIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="Resources\OpenFlare.ico"/>
         </ResourceDictionary>

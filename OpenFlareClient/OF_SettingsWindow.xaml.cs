@@ -8,6 +8,7 @@
 namespace OpenFlareClient
 {
     using System.Windows;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for Settings.xaml
@@ -37,6 +38,66 @@ namespace OpenFlareClient
             {
                 OpenFlareClient.OF_MainWindow.Settings = value;
             }
+        }
+
+        /// <summary>
+        /// CanExecute for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        /// <summary>
+        /// CanMinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        /// <summary>
+        /// CanResizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        /// <summary>
+        /// CloseWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void CloseWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        /// <summary>
+        /// MaximizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MaximizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        /// <summary>
+        /// MinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MinimizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
         }
 
         /// <summary>
@@ -79,6 +140,16 @@ namespace OpenFlareClient
         private void OF_Pass_Box_PasswordChanged(object sender, RoutedEventArgs e)
         {
             OpenFlareClient.OF_MainWindow.Settings.Password = OF_Pass_Box.SecurePassword;
+        }
+
+        /// <summary>
+        /// RestoreWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void RestoreWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
         }
     }
 }

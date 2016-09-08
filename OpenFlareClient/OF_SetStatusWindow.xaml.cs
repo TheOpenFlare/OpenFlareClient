@@ -1,9 +1,9 @@
-﻿// <copyright file="OF_AddFriendWindow.xaml.cs" company="POQDavid">
+﻿// <copyright file="OF_SetStatusWindow.xaml.cs" company="POQDavid">
 //     Copyright (c) POQDavid. All rights reserved.
 // </copyright>
 // <author>POQDavid</author>
 // <summary>
-// This is the OF_AddFriendWindow class.
+// This is the OF_SetStatusWindow class.
 // </summary>
 namespace OpenFlareClient
 {
@@ -11,17 +11,22 @@ namespace OpenFlareClient
     using System.Windows.Input;
 
     /// <summary>
-    /// Interaction logic for OF_AddFriendWindow.xaml
+    /// Interaction logic for OF_SetStatus_Window.xaml
     /// </summary>
-    public partial class OF_AddFriendWindow : Window
+    public partial class OF_SetStatusWindow : Window
     {
         /// <summary>
-        /// Initializes a new instance of the OF_AddFriendWindow class
+        /// Initializes a new instance of the OF_SetStatusWindow class
         /// </summary>
-        public OF_AddFriendWindow()
+        public OF_SetStatusWindow()
         {
             this.InitializeComponent();
         }
+
+        /// <summary>
+        /// Gets or sets the AllGroupChats property.
+        /// </summary>
+        public string Status { get; set; }
 
         /// <summary>
         /// CanExecute for Command binding.
@@ -84,23 +89,24 @@ namespace OpenFlareClient
         }
 
         /// <summary>
-        /// Click event for OF_Add_Button
+        /// Click event for OF_CancelStatus_Button
         /// </summary>
         /// <param name="sender">Sender object</param>
-        /// <param name="e">The RoutedEventArgs</param>
-        private void OF_Add_Button_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">RoutedEvent args</param>
+        private void OF_CancelStatus_Button_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            this.DialogResult = false;
         }
 
         /// <summary>
-        /// Click event for OF_Cancel_Button
+        /// Click event for OF_SetStatus_Button
         /// </summary>
         /// <param name="sender">Sender object</param>
-        /// <param name="e">The RoutedEventArgs</param>
-        private void OF_Cancel_Button_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">RoutedEvent args</param>
+        private void OF_SetStatus_Button_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            this.Status = this.OF_Status_TextBox.Text;
+            this.DialogResult = true;
         }
 
         /// <summary>

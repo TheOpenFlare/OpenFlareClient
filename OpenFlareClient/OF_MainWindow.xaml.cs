@@ -12,7 +12,6 @@ namespace OpenFlareClient
     using System.IO;
     using System.Linq;
     using System.Net.Security;
-    using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography.X509Certificates;
     using System.Threading;
@@ -179,41 +178,6 @@ namespace OpenFlareClient
                 OF_Login.IsEnabled = false;
                 this.threadxmppconnect.SmartStart(this.Connect);
             }
-        }
-
-        private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void CanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
-        }
-
-        private void CanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
-        }
-
-        private void CloseWindow(object sender, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.CloseWindow(this);
-        }
-
-        private void MaximizeWindow(object sender, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MaximizeWindow(this);
-        }
-
-        private void MinimizeWindow(object sender, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MinimizeWindow(this);
-        }
-
-        private void RestoreWindow(object sender, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.RestoreWindow(this);
         }
 
         /// <summary>
@@ -798,6 +762,46 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// CanExecute for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        /// <summary>
+        /// CanMinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        /// <summary>
+        /// CanResizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        /// <summary>
+        /// CloseWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void CloseWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        /// <summary>
         /// Getting everything ready for xmpp
         /// </summary>
         private void CreateXMPP()
@@ -897,6 +901,26 @@ namespace OpenFlareClient
             doubleAnimation.RepeatBehavior = RepeatBehavior.Forever;
             doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(10));
             tb.BeginAnimation(Canvas.LeftProperty, doubleAnimation);
+        }
+
+        /// <summary>
+        /// MaximizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MaximizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        /// <summary>
+        /// MinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MinimizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
         }
 
         /// <summary>
@@ -1201,6 +1225,16 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// RestoreWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void RestoreWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+
+        /// <summary>
         /// To animate textblock right to left
         /// </summary>
         /// <param name="tbc">Canvas object</param>
@@ -1249,43 +1283,43 @@ namespace OpenFlareClient
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                try
-                {
-                    this.Dispatcher.Invoke((Action)(() =>
-                    {
-                        if (e.Jid.GetBareJid() != XmppClientData.Jid.GetBareJid())
-                        {
-                            this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Status = e.Status.Availability.ToString();
-                            string st = "...";
+                this.Dispatcher.Invoke((Action)(() =>
+                   {
+                       try
+                       {
+                           if (e.Jid.GetBareJid() != XmppClientData.Jid.GetBareJid())
+                           {
+                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Status = e.Status.Availability.ToString();
+                               string st = "...";
 
-                            if (!e.Status.Message.IsNullOrEmpty())
-                            {
-                                st = e.Status.Message;
-                            }
+                               if (!e.Status.Message.IsNullOrEmpty())
+                               {
+                                   st = e.Status.Message;
+                               }
 
-                            this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusMessage = st;
-                        }
-                        else
-                        {
-                            XmppClientData.Status = e.Status.Availability.ToString();
-                            XmppClientData.StatusMessage = e.Status.Message;
-                        }
-                    }));
-                }
-                catch (Exception)
-                {
-                    if (statuserrs < 100)
-                    {
-                        this.UpdateStatus(sender, e);
-                    }
-                    else
-                    {
-                        throw new System.Exception("Too many errors");
-                        ////Status_Errs = 0;
-                    }
+                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusMessage = st;
+                           }
+                           else
+                           {
+                               XmppClientData.Status = e.Status.Availability.ToString();
+                               XmppClientData.StatusMessage = e.Status.Message;
+                           }
+                       }
+                       catch (Exception)
+                       {
+                           if (statuserrs < 100)
+                           {
+                               this.UpdateStatus(sender, e);
+                           }
+                           else
+                           {
+                               throw new System.Exception("Too many errors");
+                               ////Status_Errs = 0;
+                           }
 
-                    statuserrs++;
-                }
+                           statuserrs++;
+                       }
+                   }));
             }).Start();
         }
 
@@ -1525,20 +1559,26 @@ namespace OpenFlareClient
         {
             this.Dispatcher.Invoke((Action)(() =>
             {
-                if (e.Jid.GetBareJid() != this.XmppClientData.Jid.GetBareJid())
+                try
                 {
-                    this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).MyTune = e.Information;
-
-                    if (e.Stop)
+                    if (e.Jid.GetBareJid() != this.XmppClientData.Jid.GetBareJid())
                     {
-                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Visible;
-                    }
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).MyTune = e.Information;
 
-                    this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneText = e.Information.Artist + " - " + e.Information.Title;
+                        if (e.Stop)
+                        {
+                            this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneTextVisibility = Visibility.Visible;
+                        }
+
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneText = e.Information.Artist + " - " + e.Information.Title;
+                    }
+                }
+                catch (Exception)
+                {
                 }
             }));
             ////MessageBox.Show("Artist: " + e.Information.Artist + Environment.NewLine + "Album: " + e.Information.Source + Environment.NewLine + "Title: " + e.Information.Title, "File: ");

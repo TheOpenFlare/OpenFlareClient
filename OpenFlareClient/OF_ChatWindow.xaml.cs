@@ -21,7 +21,7 @@ namespace OpenFlareClient
         /// <summary>
         /// For chats
         /// </summary>
-        public Xmpp.Chats<Xmpp.ChatData> xmppChats;
+        private Xmpp.Chats<Xmpp.ChatData> xmppChats;
 
         /// <summary>
         /// For jid
@@ -94,6 +94,66 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// CanExecute for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        /// <summary>
+        /// CanMinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        /// <summary>
+        /// CanResizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the CanExecute events.</param>
+        private void CanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        /// <summary>
+        /// CloseWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void CloseWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        /// <summary>
+        /// MaximizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MaximizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        /// <summary>
+        /// MinimizeWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void MinimizeWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        /// <summary>
         /// SourceUpdated event for OF_ChatBox
         /// </summary>
         /// <param name="sender">Sender object</param>
@@ -128,6 +188,17 @@ namespace OpenFlareClient
         private void OF_SendButton_Click(object sender, RoutedEventArgs e)
         {
         }
+
+        /// <summary>
+        /// RestoreWindow for Command binding.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments for the Executed events.</param>
+        private void RestoreWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+
         /// <summary>
         /// CollectionChanged event for XmppChats
         /// </summary>

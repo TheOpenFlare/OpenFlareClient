@@ -5,11 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="Settings" Height="327.408" Width="515.073" Icon="{DynamicResource OpenFlareIcon}">
+        Title="Settings" Height="327.408" Width="515.073" Icon="{DynamicResource OpenFlareIcon}" Style="{DynamicResource OF_WindowStyle}">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CanExecute" Executed="CloseWindow" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CanResizeWindow" Executed="MaximizeWindow" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CanMinimizeWindow" Executed="MinimizeWindow" />
+        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CanResizeWindow" Executed="RestoreWindow" />
+    </Window.CommandBindings>
     <Grid>
         <TabControl x:Name="OF_Setting_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,46">
             <TabItem x:Name="OF_General" Header="General">
-                <Grid>
+                <Grid Background="#FF333333">
                     <GroupBox x:Name="OF_User_GroupBox" Header="User: " VerticalAlignment="Top" Height="107" Margin="10,10,0,0" HorizontalAlignment="Left" Width="351">
                         <Grid>
                             <TextBox x:Name="OF_UserName_Box" Height="23" Margin="75,13,10,0" TextWrapping="Wrap" Text="{Binding Settings.UserName, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top"/>
