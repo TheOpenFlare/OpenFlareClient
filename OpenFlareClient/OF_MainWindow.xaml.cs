@@ -745,7 +745,7 @@ namespace OpenFlareClient
                 if (jid.GetBareJid() == XmppClientData.Jid.GetBareJid())
                 {
                     XmppClientData.Avatar = BitmapImageExtension.ByteToBitmap(vcard.Avatar);
-                    if (XmppClientData.Name == "Loading...")
+                    if (!vcard.NickName.IsNullOrEmpty())
                     {
                         XmppClientData.Name = vcard.NickName;
                     }
@@ -753,7 +753,7 @@ namespace OpenFlareClient
                 else
                 {
                     BuddiesList.Single(j => j.Jid.GetBareJid() == jid.GetBareJid()).Avatar = BitmapImageExtension.ByteToBitmap(vcard.Avatar);
-                    if (BuddiesList.Single(j => j.Jid.GetBareJid() == jid.GetBareJid()).Name == "Loading...")
+                    if (!vcard.NickName.IsNullOrEmpty())
                     {
                         BuddiesList.Single(j => j.Jid.GetBareJid() == jid.GetBareJid()).Name = vcard.NickName;
                     }
@@ -976,7 +976,7 @@ namespace OpenFlareClient
                 {
                     if (!Application.Current.Windows.OfType<OF_ChatWindow>().Any(x => x.XmppJid == xmppBuddiesData.Jid))
                     {
-                        OF_ChatWindow CW = new OF_ChatWindow(AllChats, xmppBuddiesData.Jid);
+                        OF_ChatWindow CW = new OF_ChatWindow(AllChats, xmppBuddiesData.Jid, xmppBuddiesData.Name);
                         CW.Tag = xmppBuddiesData.Jid;
 
                         CW.Show();
@@ -1060,26 +1060,19 @@ namespace OpenFlareClient
         }
 
         /// <summary>
-        /// Click event for OF_Menu_Help_About
+        /// For opening about window
         /// </summary>
         /// <param name="sender">The sender object</param>
         /// <param name="e">RoutedEvent args</param>
-        private void OF_Menu_Help_About_Click(object sender, RoutedEventArgs e)
+        private void OpenAbout(object sender, RoutedEventArgs e)
         {
             About about = new About();
             about.ApplicationLogo = (BitmapImage)Application.Current.FindResource("OpenFlareIcon");
+            
+            about.Hyperlink = new Uri("http://www.openflare.org/"); 
+            about.HyperlinkText = "www.openflare.org";
+            about.AdditionalNotes = "---------------------------------------------------------------------------------------------------";
             about.Show();
-        }
-
-        /// <summary>
-        /// Click event for OF_Menu_Options_Settings
-        /// </summary>
-        /// <param name="sender">The sender object</param>
-        /// <param name="e">RoutedEvent args</param>
-        private void OF_Menu_Options_Settings_Click(object sender, RoutedEventArgs e)
-        {
-            OF_SettingsWindow set = new OF_SettingsWindow();
-            set.ShowDialog();
         }
 
         /// <summary>
@@ -1108,7 +1101,7 @@ namespace OpenFlareClient
         {
             this.Dispatcher.Invoke((Action)(() =>
             {
-                OF_SetStatusWindow OFSTW = new OF_SetStatusWindow();
+                OF_SetStatusWindow OFSTW = new OF_SetStatusWindow(OF_StatusText.Text);
                 OFSTW.ShowDialog();
                 if (OFSTW.DialogResult.HasValue && OFSTW.DialogResult.Value)
                 {
@@ -1140,6 +1133,16 @@ namespace OpenFlareClient
             MenuItem menuItem = (MenuItem)sender;
             Jid jid = (Jid)menuItem.Tag;
             this.xc.RemoveContact(jid);
+        }
+
+        /// <summary>
+        /// PasswordChanged event for OF_Pass_Box
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">The RoutedEventArgs</param>
+        private void OF_Pass_Box_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            this.OF_Password.Password = ((PasswordBox)sender).Password;
         }
 
         /// <summary>
@@ -1221,6 +1224,7 @@ namespace OpenFlareClient
         private void OpenSettings(object sender, RoutedEventArgs e)
         {
             OF_SettingsWindow set = new OF_SettingsWindow();
+            set.OF_Pass_Box.PasswordChanged += this.OF_Pass_Box_PasswordChanged;
             set.ShowDialog();
         }
 
@@ -1440,7 +1444,7 @@ namespace OpenFlareClient
                 {
                     if (!Application.Current.Windows.OfType<OF_ChatWindow>().Any(x => x.XmppJid.GetBareJid() == e.Jid.GetBareJid()))
                     {
-                        OF_ChatWindow CW = new OF_ChatWindow(AllChats, e.Jid.GetBareJid());
+                        OF_ChatWindow CW = new OF_ChatWindow(AllChats, e.Jid.GetBareJid(), this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Name);
                         CW.Tag = e.Jid.GetBareJid();
                         CW.Show();
                         CW.OF_SendButton.Click += SendButton_Click;
@@ -1488,14 +1492,12 @@ namespace OpenFlareClient
             else
             {
                 Xmpp.BuddiesData xmppBuddiesData = new Xmpp.BuddiesData();
-                string xname = "Loading...";
 
                 if (!e.Item.Name.IsNullOrEmpty())
                 {
-                    xname = e.Item.Name;
+                    xmppBuddiesData.Name = e.Item.Name;
                 }
 
-                xmppBuddiesData.Name = xname;
                 xmppBuddiesData.Jid = e.Item.Jid;
 
                 xmppBuddiesData.Pending = e.Item.Pending;
@@ -1614,14 +1616,12 @@ namespace OpenFlareClient
                     this.Dispatcher.Invoke((Action)(() =>
                     {
                         Xmpp.BuddiesData xmppBuddiesData = new Xmpp.BuddiesData();
-                        string xname = "Loading...";
 
                         if (!item.Name.IsNullOrEmpty())
                         {
-                            xname = item.Name;
+                            xmppBuddiesData.Name = item.Name;
                         }
 
-                        xmppBuddiesData.Name = xname;
                         xmppBuddiesData.Jid = item.Jid;
                         xmppBuddiesData.Pending = item.Pending;
                         xmppBuddiesData.SubscriptionState = item.SubscriptionState.ToString();

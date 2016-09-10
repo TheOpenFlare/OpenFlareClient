@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OpenFlare Client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("open source chat client for gamers")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("OpenFlare")]
 [assembly: AssemblyProduct("OpenFlare Client")]

@@ -118,7 +118,8 @@ namespace OpenFlareClient
         private void OF_Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             OpenFlareClient.OF_MainWindow.Settings.LoadSettings();
-            this.Close();
+            this.DialogResult = false;
+            //this.Close();
         }
 
         /// <summary>
@@ -129,7 +130,8 @@ namespace OpenFlareClient
         private void OF_Button_Save_Click(object sender, RoutedEventArgs e)
         {
             OpenFlareClient.OF_MainWindow.Settings.SaveSetting();
-            this.Close();
+            this.DialogResult = true;
+            //this.Close();
         }
 
         /// <summary>

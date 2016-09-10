@@ -61,19 +61,20 @@
                 <MenuItem x:Name="OF_Menu_File_Exit" Header="_Exit" Click="ExitApp" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
             </MenuItem>
             <MenuItem Header="_Options" Grid.Column="1" Template="{DynamicResource OF_MenuItemControlTemplate}">
-                <MenuItem x:Name="OF_Menu_Options_Settings" Header="_Settings" Click="OF_Menu_Options_Settings_Click" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
+                <MenuItem x:Name="OF_Menu_Options_Settings" Header="_Settings" Click="OpenSettings" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
             </MenuItem>
             <MenuItem Header="_Add" HorizontalAlignment="Center" Grid.Column="2" Template="{DynamicResource OF_MenuItemControlTemplate}">
                 <MenuItem x:Name="OF_Menu_Add_Friend" Header="_Friend" Click="OF_Menu_Add_Friend_Click" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
             </MenuItem>
             <MenuItem Header="_Help"  HorizontalAlignment="Right" Grid.Column="3" Template="{DynamicResource OF_MenuItemControlTemplate}">
-                <MenuItem x:Name="OF_Menu_Help_About" Header="_About" Click="OF_Menu_Help_About_Click" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
+                <MenuItem x:Name="OF_Menu_Help_About" Header="_About" Click="OpenAbout" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
             </MenuItem>
         </Menu>
         <tb:TaskbarIcon x:Name="OF_TaskbarIcon" ToolTipText="OpenFlare Client" IconSource="{DynamicResource OpenFlareIcon}" >
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="OF_NIMenu_Settings" Header="Settings" Click="OpenSettings"/>
+                    <MenuItem x:Name="OF_NIMenu_About" Header="About" Click="OpenAbout"/>
                     <MenuItem x:Name="OF_NIMenu_Exit" Header="Exit" Click="ExitApp"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -104,7 +105,7 @@
         </Canvas>
         <TabControl x:Name="OF_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,106,0,0" Style="{DynamicResource OF_TabControlStyle}">
             <TabItem x:Name="OF_Friends" Header="Friends">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <ListView x:Name="OF_FriendsList" MouseDoubleClick="OF_FriendsList_MouseDoubleClick"
                     DataContext="{Binding BuddiesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"
 					ItemsSource="{Binding}" ItemTemplate="{DynamicResource FriendsListTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="#FF333333" BorderThickness="0">

@@ -33,7 +33,7 @@ namespace OpenFlareClient
         /// </summary>
         /// <param name="xmppChats">All chats</param>
         /// <param name="jid">Jid of the chat</param>
-        public OF_ChatWindow(Xmpp.Chats<Xmpp.ChatData> xmppChats, Sharp.Xmpp.Jid jid)
+        public OF_ChatWindow(Xmpp.Chats<Xmpp.ChatData> xmppChats, Sharp.Xmpp.Jid jid, string name)
         {
             this.InitializeComponent();
             this.xmppChats = new Xmpp.Chats<Xmpp.ChatData>();
@@ -41,7 +41,7 @@ namespace OpenFlareClient
             this.xmppJid = jid;
             OF_SendButton.Tag = jid;
             OF_MsgBox.Tag = jid;
-            this.Title = this.Title + " > " + this.xmppJid;
+            this.Title = this.Title + " - " + name;
 
             ////this.chatBox.Items. = XC.Single(j => j.Jid == C_jid).Msgs;
             this.xmppChats.CollectionChanged += this.XmppChats_CollectionChanged;

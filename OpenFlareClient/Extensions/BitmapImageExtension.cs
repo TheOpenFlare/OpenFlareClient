@@ -48,15 +48,27 @@ namespace OpenFlareClient
         /// <returns>Returns BitmapImage</returns>
         public static BitmapImage ByteToBitmap(byte[] imagebyte)
         {
-            MemoryStream memoryStream = new MemoryStream(imagebyte);
-            memoryStream.Position = 0;
-
+            MemoryStream memoryStream = new MemoryStream();
             BitmapImage bitmapImage = new BitmapImage();
 
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = memoryStream;
-            bitmapImage.EndInit();
+            try
+            {
+                memoryStream = new MemoryStream(imagebyte);
+                memoryStream.Position = 0;
+
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.EndInit();
+            }
+            catch (Exception)
+            {
+                bitmapImage = null;
+            }
+
+            
+
+
 
             memoryStream.Close();
             memoryStream = null;

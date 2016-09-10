@@ -15,16 +15,19 @@ namespace OpenFlareClient
     /// </summary>
     public partial class OF_SetStatusWindow : Window
     {
+
         /// <summary>
         /// Initializes a new instance of the OF_SetStatusWindow class
         /// </summary>
-        public OF_SetStatusWindow()
+        /// <param name="currentstatus">String of the current status</param>
+        public OF_SetStatusWindow(string currentstatus)
         {
             this.InitializeComponent();
+            this.OF_Status_TextBox.Text = currentstatus;
         }
 
         /// <summary>
-        /// Gets or sets the AllGroupChats property.
+        /// Gets or sets the Status property.
         /// </summary>
         public string Status { get; set; }
 

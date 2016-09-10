@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="Add Friend" Height="127.941" Width="408.088" WindowStyle="ToolWindow" ResizeMode="NoResize" Icon="{DynamicResource OpenFlareIcon}" Style="{DynamicResource OF_WindowStyle}">
+        Title="Add Friend" Height="117.716" Width="408.088" WindowStyle="ToolWindow" ResizeMode="NoResize" Icon="{DynamicResource OpenFlareIcon}" Style="{DynamicResource OF_WindowStyle}">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CanExecute" Executed="CloseWindow" />
         <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CanResizeWindow" Executed="MaximizeWindow" />
@@ -13,9 +13,9 @@
         <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CanResizeWindow" Executed="RestoreWindow" />
     </Window.CommandBindings>
     <Grid>
-        <TextBox x:Name="OF_Name_TextBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382"/>
-        <Button x:Name="OF_Add_Button" Content="Add" HorizontalAlignment="Left" Margin="10,38,0,7" Width="188" Click="OF_Add_Button_Click" IsDefault="True"/>
-        <Button x:Name="OF_Cancel_Button" Content="Cancel" Margin="203,39,10,7" Click="OF_Cancel_Button_Click" IsCancel="True"/>
+        <TextBox x:Name="OF_Name_TextBox" Height="23" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button x:Name="OF_Add_Button" Content="Add" HorizontalAlignment="Left" Margin="0,38,0,7" Width="198" Click="OF_Add_Button_Click" IsDefault="True"/>
+        <Button x:Name="OF_Cancel_Button" Content="Cancel" Margin="203,39,0,7" Click="OF_Cancel_Button_Click" IsCancel="True"/>
 
     </Grid>
 </Window>

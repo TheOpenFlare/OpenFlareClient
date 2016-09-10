@@ -33,7 +33,7 @@ namespace OpenFlareClient.Xmpp
         /// <summary>
         /// Default for name
         /// </summary>
-        private string defaultName = "Loading...";
+        private string defaultName = string.Empty;
 
         /// <summary>
         /// Default for pending
@@ -128,7 +128,14 @@ namespace OpenFlareClient.Xmpp
         {
             get
             {
-                return this.defaultName;
+                if (this.defaultName.IsNullOrEmpty())
+                {
+                    return "@" + this.defaultJid.GetBareJid().ToString().Split('@')[0];
+                }
+                else
+                {
+                    return this.defaultName;
+                }
             }
 
             set
