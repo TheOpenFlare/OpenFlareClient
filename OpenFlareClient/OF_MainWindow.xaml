@@ -15,7 +15,7 @@
     </Window.CommandBindings>
     <Window.Resources>   
         <DataTemplate x:Key="FriendsListTemplate">
-            <Grid>
+            <Grid Height="54">
                 <Grid.ContextMenu>
                     <ContextMenu>
                         <MenuItem x:Name="OF_MenuList_Remove_Friend" Tag="{Binding Jid}" Header="Remove" Click="OF_MenuList_Remove_Friend_Click"/>
@@ -23,16 +23,16 @@
                         <MenuItem x:Name="OF_MenuList_SendFile" Tag="{Binding Jid}" Header="Send File"/>
                     </ContextMenu>
                 </Grid.ContextMenu>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Height="70" Width="70" Source="{Binding Avatar}" />
-                <StackPanel Grid.Column="1">
+                <Grid Background="#FF7A7A7A" VerticalAlignment="Center">
+                    <Image  Source="{Binding Avatar}" />
+                </Grid>
+                <StackPanel Height="Auto" Grid.Column="1">
                     <Label Height="Auto" Content="{Binding Name}"/>
-                    <Label Height="Auto" Content="{Binding Status}" Background="#FF0068FF" HorizontalContentAlignment="Center" />
-                    <Label Height="Auto" Content="{Binding StatusMessage}" Background="#CD0068FF" BorderBrush="#FF0068FF" BorderThickness="5"/>
+                    <Label Height="Auto" Content="{Binding StatusMessage}" Background="#CD0068FF" BorderBrush="{Binding StatusColor}" BorderThickness="2" VerticalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -105,7 +105,7 @@
         </Canvas>
         <TabControl x:Name="OF_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,106,0,0" Style="{DynamicResource OF_TabControlStyle}">
             <TabItem x:Name="OF_Friends" Header="Friends">
-                <Grid>
+                <Grid Background="#FF333333">
                     <ListView x:Name="OF_FriendsList" MouseDoubleClick="OF_FriendsList_MouseDoubleClick"
                     DataContext="{Binding BuddiesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"
 					ItemsSource="{Binding}" ItemTemplate="{DynamicResource FriendsListTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="#FF333333" BorderThickness="0">
@@ -124,6 +124,22 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="Jid: " FontWeight="Bold" Grid.Column="0"/>
                                                 <TextBlock Text="{Binding Jid}" Grid.Column="1"/>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Status: " FontWeight="Bold" Grid.Column="0"/>
+                                                <TextBlock Text="{Binding Status}" Grid.Column="1"/>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Status Message: " FontWeight="Bold" Grid.Column="0"/>
+                                                <TextBlock Text="{Binding StatusMessage}" Grid.Column="1"/>
                                             </Grid>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -172,7 +188,7 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="OF_Groups" Header="Groups">
-                <Grid Background="#FFE5E5E5">
+                <Grid Background="#FF333333">
                     <ListView x:Name="OF_GroupsList" DataContext="{Binding AllGroupChats, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"
 					ItemsSource="{Binding AllGroupChats, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" ItemTemplate="{DynamicResource GroupListTemplate}" MouseDoubleClick="OF_GroupsList_MouseDoubleClick" Background="#FF333333" BorderThickness="0"/>
                 </Grid>

@@ -448,6 +448,43 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// String to availability color
+        /// </summary>
+        /// <param name="avb">Availability in string</param>
+        /// <returns>Converted string to availability color</returns>
+        public SolidColorBrush GetFromStringToSCB(string avb)
+        {
+            SolidColorBrush temp = new SolidColorBrush(Color.FromArgb(100, 102, 102, 102));
+
+            if (avb == "Online")
+            {
+                temp = Brushes.LimeGreen;
+            }
+
+            if (avb == "Away")
+            {
+                temp = Brushes.Yellow;
+            }
+
+            if (avb == "Chat")
+            {
+                temp = Brushes.LimeGreen;
+            }
+
+            if (avb == "Dnd")
+            {
+                temp = Brushes.Red;
+            }
+
+            if (avb == "Xa")
+            {
+                temp = Brushes.Orange;
+            }
+
+            return temp;
+        }
+
+        /// <summary>
         /// Pings one time to the XMPP server and an appropriate error event is raised if disconnected
         /// </summary>
         public void PingServer()
@@ -1060,22 +1097,6 @@ namespace OpenFlareClient
         }
 
         /// <summary>
-        /// For opening about window
-        /// </summary>
-        /// <param name="sender">The sender object</param>
-        /// <param name="e">RoutedEvent args</param>
-        private void OpenAbout(object sender, RoutedEventArgs e)
-        {
-            About about = new About();
-            about.ApplicationLogo = (BitmapImage)Application.Current.FindResource("OpenFlareIcon");
-            
-            about.Hyperlink = new Uri("http://www.openflare.org/"); 
-            about.HyperlinkText = "www.openflare.org";
-            about.AdditionalNotes = "---------------------------------------------------------------------------------------------------";
-            about.Show();
-        }
-
-        /// <summary>
         /// Add avatar
         /// </summary>
         /// <param name="sender">The sender object</param>
@@ -1217,6 +1238,22 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// For opening about window
+        /// </summary>
+        /// <param name="sender">The sender object</param>
+        /// <param name="e">RoutedEvent args</param>
+        private void OpenAbout(object sender, RoutedEventArgs e)
+        {
+            About about = new About();
+            about.ApplicationLogo = (BitmapImage)Application.Current.FindResource("OpenFlareIcon");
+
+            about.Hyperlink = new Uri("http://www.openflare.org/");
+            about.HyperlinkText = "www.openflare.org";
+            about.AdditionalNotes = "---------------------------------------------------------------------------------------------------";
+            about.Show();
+        }
+
+        /// <summary>
         /// For opening settings window
         /// </summary>
         /// <param name="sender">The sender object</param>
@@ -1294,6 +1331,7 @@ namespace OpenFlareClient
                            if (e.Jid.GetBareJid() != XmppClientData.Jid.GetBareJid())
                            {
                                this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Status = e.Status.Availability.ToString();
+                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
                                string st = "...";
 
                                if (!e.Status.Message.IsNullOrEmpty())
@@ -1306,6 +1344,7 @@ namespace OpenFlareClient
                            else
                            {
                                XmppClientData.Status = e.Status.Availability.ToString();
+                               XmppClientData.StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
                                XmppClientData.StatusMessage = e.Status.Message;
                            }
                        }

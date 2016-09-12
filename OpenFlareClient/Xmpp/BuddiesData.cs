@@ -8,6 +8,7 @@ namespace OpenFlareClient.Xmpp
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Windows;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -44,6 +45,11 @@ namespace OpenFlareClient.Xmpp
         /// Default for status
         /// </summary>
         private string defaultStatus = "Offline";
+
+        /// <summary>
+        /// Default for StatusColor
+        /// </summary>
+        private SolidColorBrush defaultStatusColor = new SolidColorBrush(Color.FromArgb(100, 102, 102, 102));
 
         /// <summary>
         /// Default for StatusMessage
@@ -175,6 +181,23 @@ namespace OpenFlareClient.Xmpp
             set
             {
                 this.defaultStatus = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets StatusColor
+        /// </summary>
+        public SolidColorBrush StatusColor
+        {
+            get
+            {
+                return this.defaultStatusColor;
+            }
+
+            set
+            {
+                this.defaultStatusColor = value;
                 this.NotifyPropertyChanged();
             }
         }

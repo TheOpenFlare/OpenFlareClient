@@ -5,9 +5,9 @@
 // <summary>This is the ClientData class.</summary>
 namespace OpenFlareClient.Xmpp
 {
-    using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -19,6 +19,11 @@ namespace OpenFlareClient.Xmpp
         /// Default for Avatar
         /// </summary>
         private BitmapImage defaultAvatar = null;
+
+        /// <summary>
+        /// Default for Jid
+        /// </summary>
+        private Sharp.Xmpp.Jid defaultJid;
 
         /// <summary>
         /// Default for MyTune
@@ -36,6 +41,11 @@ namespace OpenFlareClient.Xmpp
         private string defaultStatus = "Offline";
 
         /// <summary>
+        /// Default for StatusColor
+        /// </summary>
+        private SolidColorBrush defaultStatusColor = new SolidColorBrush(Color.FromArgb(100, 102, 102, 102));
+
+        /// <summary>
         /// Default for StatusMessage
         /// </summary>
         private string defaultStatusMessage = string.Empty;
@@ -44,11 +54,6 @@ namespace OpenFlareClient.Xmpp
         /// Default for TuneText
         /// </summary>
         private string defaultTuneText = "Not Playing any music!";
-
-        /// <summary>
-        /// Default for Jid
-        /// </summary>
-        private Sharp.Xmpp.Jid defaultJid;
 
         /// <summary>
         /// PropertyChanged event for ChatData
@@ -136,6 +141,24 @@ namespace OpenFlareClient.Xmpp
             set
             {
                 this.defaultStatus = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets StatusColor
+        /// </summary>
+        public SolidColorBrush StatusColor
+        {
+            get
+            {
+                
+                return this.defaultStatusColor;
+            }
+
+            set
+            {
+                this.defaultStatusColor = value;
                 this.NotifyPropertyChanged();
             }
         }
