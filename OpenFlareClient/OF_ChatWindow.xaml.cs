@@ -33,6 +33,7 @@ namespace OpenFlareClient
         /// </summary>
         /// <param name="xmppChats">All chats</param>
         /// <param name="jid">Jid of the chat</param>
+        /// <param name="name">Name of the user</param>
         public OF_ChatWindow(Xmpp.Chats<Xmpp.ChatData> xmppChats, Sharp.Xmpp.Jid jid, string name)
         {
             this.InitializeComponent();

@@ -66,10 +66,6 @@ namespace OpenFlareClient
                 bitmapImage = null;
             }
 
-            
-
-
-
             memoryStream.Close();
             memoryStream = null;
 

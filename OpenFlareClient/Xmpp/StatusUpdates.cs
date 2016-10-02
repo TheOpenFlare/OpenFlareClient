@@ -1,8 +1,8 @@
-﻿// <copyright file="Chats.cs" company="POQDavid">
+﻿// <copyright file="StatusUpdates.cs" company="POQDavid">
 // Copyright (c) POQDavid. All rights reserved.
 // </copyright>
 // <author>POQDavid</author>
-// <summary>This is the Chats class.</summary>
+// <summary>This is the StatusUpdates class.</summary>
 namespace OpenFlareClient.Xmpp
 {
     using System.Collections.Generic;
@@ -12,48 +12,48 @@ namespace OpenFlareClient.Xmpp
     using System.Windows.Threading;
 
     /// <summary>
-    /// Chats class
+    /// StatusUpdates class
     /// </summary>
-    /// <typeparam name="ChatData">Chat data</typeparam>
-    public class Chats<ChatData> : ObservableCollection<ChatData> where ChatData : INotifyPropertyChanged
+    /// <typeparam name="StatusUpdateData">StatusUpdate Data</typeparam>
+    public class StatusUpdates<StatusUpdateData> : ObservableCollection<StatusUpdateData> where StatusUpdateData : INotifyPropertyChanged
     {
         /// <summary>
-        /// UI thread dispatcher
+        /// Dispatcher dispatcherUIThread
         /// </summary>
         private Dispatcher dispatcherUIThread;
 
         /// <summary>
-        /// Initializes a new instance of the Chats class
+        /// Initializes a new instance of the StatusUpdates class
         /// </summary>
-        /// <param name="dispatcher">Dispatcher object</param>
-        public Chats(Dispatcher dispatcher)
+        /// <param name="dispatcher">Dispatcher dispatcher</param>
+        public StatusUpdates(Dispatcher dispatcher)
         {
             this.dispatcherUIThread = dispatcher;
         }
 
         /// <summary>
-        /// Initializes a new instance of the Chats class
+        /// Initializes a new instance of the StatusUpdates class
         /// </summary>
-        public Chats()
+        public StatusUpdates()
         {
             this.dispatcherUIThread = Dispatcher.CurrentDispatcher;
-            this.CollectionChanged += new NotifyCollectionChangedEventHandler(this.Chats_CollectionChanged);
+            this.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(this.StatusUpdates_CollectionChanged);
         }
 
         /// <summary>
-        /// Initializes a new instance of the Chats class
+        /// Initializes a new instance of the StatusUpdates class
         /// </summary>
-        /// <param name="collection">ChatData collection</param>
-        public Chats(IEnumerable<ChatData> collection) : this()
+        /// <param name="collection">IEnumerable BuddiesData collection</param>
+        public StatusUpdates(IEnumerable<StatusUpdateData> collection) : this()
         {
-            //// AddRange(collection);
+            // AddRange(collection);
         }
 
         /// <summary>
         /// Callback for adding item
         /// </summary>
-        /// <param name="item">Item to be added</param>
-        private delegate void AddItemCallback(ChatData item);
+        /// <param name="item">Item to add</param>
+        private delegate void AddItemCallback(StatusUpdateData item);
 
         /// <summary>
         /// Callback for clearing items
@@ -61,31 +61,31 @@ namespace OpenFlareClient.Xmpp
         private delegate void ClearItemsCallback();
 
         /// <summary>
-        /// Callback for inserting item
+        /// Callback for inserting item at selected index
         /// </summary>
         /// <param name="index">Item index</param>
-        /// <param name="item">Item to insert</param>
-        private delegate void InsertItemCallback(int index, ChatData item);
+        /// <param name="item">Item to add</param>
+        private delegate void InsertItemCallback(int index, StatusUpdateData item);
 
         /// <summary>
-        /// Callback for moving item
+        /// Callback to move item to selected index
         /// </summary>
         /// <param name="oldIndex">Selected index</param>
         /// <param name="newIndex">New index</param>
         private delegate void MoveItemCallback(int oldIndex, int newIndex);
 
         /// <summary>
-        /// Callback for removing item
+        /// Callback to remove item
         /// </summary>
         /// <param name="index">Item index</param>
         private delegate void RemoveItemCallback(int index);
 
         /// <summary>
-        /// Callback for setting a item
+        /// Callback to set item
         /// </summary>
         /// <param name="index">Item index</param>
         /// <param name="item">Item to set</param>
-        private delegate void SetItemCallback(int index, ChatData item);
+        private delegate void SetItemCallback(int index, StatusUpdateData item);
 
         /// <summary>
         /// Gets Dispatcher
@@ -99,7 +99,7 @@ namespace OpenFlareClient.Xmpp
         }
 
         /// <summary>
-        /// PropertyChanged for EntityViewModel
+        /// EntityViewModelPropertyChanged for StatusUpdates
         /// </summary>
         /// <param name="sender">Sender object</param>
         /// <param name="e">Event args</param>
@@ -130,7 +130,7 @@ namespace OpenFlareClient.Xmpp
         /// </summary>
         /// <param name="index">Item index</param>
         /// <param name="item">Item to insert</param>
-        protected override void InsertItem(int index, ChatData item)
+        protected override void InsertItem(int index, StatusUpdateData item)
         {
             if (this.dispatcherUIThread == null)
             {
@@ -144,12 +144,10 @@ namespace OpenFlareClient.Xmpp
             {
                 this.dispatcherUIThread.Invoke(DispatcherPriority.Send, new InsertItemCallback(this.InsertItem), index, new object[] { item });
             }
-
-            this.Chats_CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
 
         /// <summary>
-        /// Moves item
+        /// Move item
         /// </summary>
         /// <param name="oldIndex">Selected index</param>
         /// <param name="newIndex">New index</param>
@@ -182,11 +180,11 @@ namespace OpenFlareClient.Xmpp
         }
 
         /// <summary>
-        /// Sets item
+        /// Set item
         /// </summary>
         /// <param name="index">Item index</param>
         /// <param name="item">Item to set</param>
-        protected override void SetItem(int index, ChatData item)
+        protected override void SetItem(int index, StatusUpdateData item)
         {
             if (this.dispatcherUIThread.CheckAccess())
             {
@@ -199,15 +197,15 @@ namespace OpenFlareClient.Xmpp
         }
 
         /// <summary>
-        /// CollectionChanged event for Chats
+        /// CollectionChanged event
         /// </summary>
         /// <param name="sender">Sender object</param>
         /// <param name="e">Event args</param>
-        private void Chats_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void StatusUpdates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                foreach (ChatData item in e.OldItems)
+                foreach (StatusUpdateData item in e.OldItems)
                 {
                     ////Removed items
                     item.PropertyChanged -= this.EntityViewModelPropertyChanged;
@@ -215,7 +213,7 @@ namespace OpenFlareClient.Xmpp
             }
             else if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (ChatData item in e.NewItems)
+                foreach (StatusUpdateData item in e.NewItems)
                 {
                     ////Added items
                     item.PropertyChanged += this.EntityViewModelPropertyChanged;

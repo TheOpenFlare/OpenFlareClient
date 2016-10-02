@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OpenFlareClient"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="OpenFlare Client" Height="591.912" Width="329.411" Icon="{DynamicResource OpenFlareIcon}" Loaded="Window_Loaded" Closing="Window_Closing" Style="{DynamicResource OF_WindowStyle}">
+        Title="OpenFlare Client" Height="591.912" Width="329.411" Icon="{DynamicResource OpenFlareIcon}" Loaded="Window_Loaded" Closing="Window_Closing" Style="{StaticResource {x:Type Window}}">
         <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CanExecute" Executed="CloseWindow" />
         <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CanResizeWindow" Executed="MaximizeWindow" />
@@ -70,9 +70,11 @@
                 <MenuItem x:Name="OF_Menu_Help_About" Header="_About" Click="OpenAbout" Template="{DynamicResource OF_MenuItemControlTemplate}"/>
             </MenuItem>
         </Menu>
-        <tb:TaskbarIcon x:Name="OF_TaskbarIcon" ToolTipText="OpenFlare Client" IconSource="{DynamicResource OpenFlareIcon}" >
+        <tb:TaskbarIcon x:Name="OF_TaskbarIcon" ToolTipText="OpenFlare Client" IconSource="{DynamicResource OpenFlareIcon}" TrayMouseDoubleClick="WinShowAndHide" >
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
+                    <MenuItem x:Name="OF_NIMenu_ShowAndHide" Header="Show/Hide" Click="WinShowAndHide"/>
+                    <Separator/>
                     <MenuItem x:Name="OF_NIMenu_Settings" Header="Settings" Click="OpenSettings"/>
                     <MenuItem x:Name="OF_NIMenu_About" Header="About" Click="OpenAbout"/>
                     <MenuItem x:Name="OF_NIMenu_Exit" Header="Exit" Click="ExitApp"/>
@@ -88,7 +90,6 @@
             </Grid.ContextMenu>
         </Grid>
         <ComboBox x:Name="OF_Status" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Top" Margin="86,23,0,0" SelectionChanged="OF_Status_SelectionChanged" SelectedIndex="{Binding Settings.Status, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}">
-            <ComboBoxItem Content="Offline"/>
             <ComboBoxItem Content="Online"/>
             <ComboBoxItem Content="Away"/>
             <ComboBoxItem Content="Chat"/>
@@ -104,7 +105,7 @@
             <TextBlock x:Name="OF_StatusText" Margin="81,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" LostFocus="OF_StatusText_LostFocus" Text="{Binding Settings.StatusMessage,IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}" Height="18"/>
         </Canvas>
         <TabControl x:Name="OF_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,106,0,0" Style="{DynamicResource OF_TabControlStyle}">
-            <TabItem x:Name="OF_Friends" Header="Friends">
+            <TabItem x:Name="OF_Friends" Header="Friends"  Background="#FF333333">
                 <Grid Background="#FF333333">
                     <ListView x:Name="OF_FriendsList" MouseDoubleClick="OF_FriendsList_MouseDoubleClick"
                     DataContext="{Binding BuddiesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_MainWindow}}}"

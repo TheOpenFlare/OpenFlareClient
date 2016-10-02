@@ -152,7 +152,6 @@ namespace OpenFlareClient.Xmpp
         {
             get
             {
-                
                 return this.defaultStatusColor;
             }
 

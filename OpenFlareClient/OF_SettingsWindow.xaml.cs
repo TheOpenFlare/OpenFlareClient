@@ -119,7 +119,6 @@ namespace OpenFlareClient
         {
             OpenFlareClient.OF_MainWindow.Settings.LoadSettings();
             this.DialogResult = false;
-            //this.Close();
         }
 
         /// <summary>
@@ -131,7 +130,6 @@ namespace OpenFlareClient
         {
             OpenFlareClient.OF_MainWindow.Settings.SaveSetting();
             this.DialogResult = true;
-            //this.Close();
         }
 
         /// <summary>

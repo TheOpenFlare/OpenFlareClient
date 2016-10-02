@@ -32,6 +32,21 @@ namespace OpenFlareClient
         private bool? defaultAutoConnect = false;
 
         /// <summary>
+        /// Default value for FriendOfflineNotify.
+        /// </summary>
+        private bool? defaultFriendOfflineNotify = false;
+
+        /// <summary>
+        /// Default value for FriendOnlineNotify.
+        /// </summary>
+        private bool? defaultFriendOnlineNotify = false;
+
+        /// <summary>
+        /// Default value for StatusMessageNotify.
+        /// </summary>
+        private bool? defaultFriendTuneNotify = false;
+
+        /// <summary>
         /// Default value for Password.
         /// </summary>
         private SecureString defaultPassword = string.Empty.SecureString();
@@ -55,6 +70,11 @@ namespace OpenFlareClient
         /// Default value for StatusMessage
         /// </summary>
         private string defaultStatusMessage = string.Empty;
+
+        /// <summary>
+        /// Default value for StatusMessageNotify.
+        /// </summary>
+        private bool? defaultStatusMessageNotify = false;
 
         /// <summary>
         /// Default value for UserName.
@@ -93,6 +113,63 @@ namespace OpenFlareClient
             set
             {
                 this.defaultAutoConnect = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show or not to show notification for friends getting offline.
+        /// </summary>
+        [JsonProperty("FriendTuneNotify")]
+        [DefaultValue(false)]
+        public bool? FriendOfflineNotify
+        {
+            get
+            {
+                return this.defaultFriendOfflineNotify;
+            }
+
+            set
+            {
+                this.defaultFriendOfflineNotify = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show or not to show notification for friends getting online.
+        /// </summary>
+        [JsonProperty("FriendOnlineNotify")]
+        [DefaultValue(false)]
+        public bool? FriendOnlineNotify
+        {
+            get
+            {
+                return this.defaultFriendOnlineNotify;
+            }
+
+            set
+            {
+                this.defaultFriendOnlineNotify = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show or not to show notification for friends tune.
+        /// </summary>
+        [JsonProperty("FriendOfflineNotify")]
+        [DefaultValue(false)]
+        public bool? FriendTuneNotify
+        {
+            get
+            {
+                return this.defaultFriendTuneNotify;
+            }
+
+            set
+            {
+                this.defaultFriendTuneNotify = value;
                 this.NotifyPropertyChanged();
             }
         }
@@ -158,7 +235,7 @@ namespace OpenFlareClient
         /// Gets or sets Status
         /// </summary>
         [JsonProperty("Status")]
-        [DefaultValue(false)]
+        [DefaultValue(0)]
         public int Status
         {
             get
@@ -188,6 +265,25 @@ namespace OpenFlareClient
             set
             {
                 this.defaultStatusMessage = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show or not to show notification for friends changing status message.
+        /// </summary>
+        [JsonProperty("StatusMessageNotify")]
+        [DefaultValue(false)]
+        public bool? StatusMessageNotify
+        {
+            get
+            {
+                return this.defaultStatusMessageNotify;
+            }
+
+            set
+            {
+                this.defaultStatusMessageNotify = value;
                 this.NotifyPropertyChanged();
             }
         }
@@ -246,9 +342,9 @@ namespace OpenFlareClient
         {
             try
             {
-                if (File.Exists(OpenFlareClient.OF_MainWindow.SettingPath))
+                if (File.Exists(OpenFlareClient.App.SettingPath))
                 {
-                    string json_string = File.ReadAllText(OpenFlareClient.OF_MainWindow.SettingPath);
+                    string json_string = File.ReadAllText(OpenFlareClient.App.SettingPath);
                     if (Json.IsValid(json_string))
                     {
                         var s = new JsonSerializerSettings();
@@ -299,7 +395,7 @@ namespace OpenFlareClient
             var s = new JsonSerializerSettings();
             s.ObjectCreationHandling = ObjectCreationHandling.Replace; //// without this, you end up with duplicates.
 
-            File.WriteAllText(OpenFlareClient.OF_MainWindow.SettingPath, JsonConvert.SerializeObject(this, Formatting.Indented, s));
+            File.WriteAllText(OpenFlareClient.App.SettingPath, JsonConvert.SerializeObject(this, Formatting.Indented, s));
         }
 
         /// <summary>

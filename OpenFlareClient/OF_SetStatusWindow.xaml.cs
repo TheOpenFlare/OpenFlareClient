@@ -15,7 +15,6 @@ namespace OpenFlareClient
     /// </summary>
     public partial class OF_SetStatusWindow : Window
     {
-
         /// <summary>
         /// Initializes a new instance of the OF_SetStatusWindow class
         /// </summary>

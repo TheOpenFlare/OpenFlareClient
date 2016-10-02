@@ -36,6 +36,16 @@ namespace OpenFlareClient
         internal const int WMCOPYDATA = 0x4A;
 
         /// <summary>
+        /// Int WMENDSESSION (0x16)
+        /// </summary>
+        internal const int WMENDSESSION = 0x16;
+
+        /// <summary>
+        /// Int WMQUERYENDSESSION (0x11)
+        /// </summary>
+        internal const int WMQUERYENDSESSION = 0x11;
+
+        /// <summary>
         /// Int WMUSER (0x400)
         /// </summary>
         internal const int WMUSER = 0x400;

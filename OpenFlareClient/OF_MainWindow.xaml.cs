@@ -23,6 +23,7 @@ namespace OpenFlareClient
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
+    using System.Windows.Threading;
     using System.Xml;
     using Gat.Controls;
     using Microsoft.Win32;
@@ -49,12 +50,6 @@ namespace OpenFlareClient
         private static int defaultTimeOut = 20000;
 
         /// <summary>
-        /// This is simply where client stores data and loads them from.
-        /// </summary>
-        /// <returns>directory for the client's data and settings.</returns>
-        private static string settingPath = @"Settings.json";
-
-        /// <summary>
         /// Album string
         /// </summary>
         private string album = null;
@@ -70,6 +65,11 @@ namespace OpenFlareClient
         private string artist = null;
 
         /// <summary>
+        /// To close windows or not
+        /// </summary>
+        private bool closeWin = false;
+
+        /// <summary>
         /// List of joined muc (Currently not used)
         /// </summary>
         private List<string> joinedmuc = new List<string>();
@@ -78,6 +78,11 @@ namespace OpenFlareClient
         /// Music length
         /// </summary>
         private int length = 0;
+
+        /// <summary>
+        /// Friends list is ready or not
+        /// </summary>
+        private bool listready = false;
 
         /// <summary>
         /// For the last track name
@@ -110,9 +115,24 @@ namespace OpenFlareClient
         private string resource = "OpenFlareClient";
 
         /// <summary>
+        /// When ready to show notification
+        /// </summary>
+        private bool shownotify = false;
+
+        /// <summary>
+        /// Status count
+        /// </summary>
+        private int statuscount = 0;
+
+        /// <summary>
         /// Number of errors for loading friends list to prevent loop
         /// </summary>
         private int statuserrs = 0;
+
+        /// <summary>
+        /// Timer for updaing status
+        /// </summary>
+        private DispatcherTimer statusUpdateTimer;
 
         /// <summary>
         /// Separator for music data from player plugin
@@ -161,6 +181,14 @@ namespace OpenFlareClient
             this.BuddiesList = new Xmpp.Buddies<Xmpp.BuddiesData>();
             this.AllChats = new Xmpp.Chats<Xmpp.ChatData>();
             this.AllGroupChats = new Xmpp.GroupChats<Xmpp.GroupChatData>();
+            this.AllStatusUpdates = new Xmpp.StatusUpdates<Xmpp.StatusUpdateData>();
+
+            this.statusUpdateTimer = new System.Windows.Threading.DispatcherTimer();
+            this.statusUpdateTimer.Tick += this.StatusUpdateTimer_Tick;
+            this.statusUpdateTimer.Interval = new TimeSpan(0, 0, 1);
+            this.statusUpdateTimer.Start();
+
+            this.XmppClientData.Jid = new Jid(Settings.UserName + "@" + Settings.Server + "/" + this.resource);
 
             BindingOperations.EnableCollectionSynchronization(this.AllChats, this.allchatsLock);
             this.InitializeComponent();
@@ -181,16 +209,6 @@ namespace OpenFlareClient
         }
 
         /// <summary>
-        /// Gets or sets the SettingPath property.
-        /// </summary>
-        /// <value>Path for the client's settings.</value>
-        public static string SettingPath
-        {
-            get { return settingPath; }
-            set { settingPath = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the Settings property.
         /// </summary>
         /// <value>Client Settings.</value>
@@ -200,6 +218,11 @@ namespace OpenFlareClient
         /// Gets or sets the AllGroupChats property.
         /// </summary>
         public Xmpp.GroupChats<Xmpp.GroupChatData> AllGroupChats { get; set; }
+
+        /// <summary>
+        /// Gets or sets the AllStatusUpdates property.
+        /// </summary>
+        public Xmpp.StatusUpdates<Xmpp.StatusUpdateData> AllStatusUpdates { get; set; }
 
         /// <summary>
         /// Gets or sets the BuddiesList property.
@@ -294,24 +317,44 @@ namespace OpenFlareClient
         /// </summary>
         public void CloseAll()
         {
-            this.XClose();
-
-            if (this.pingTimer != null)
-            {
-                this.pingTimer.Dispose();
-            }
-
-            this.pingTimer = null;
-
             try
             {
+                this.closeWin = true;
+
+                TuneInformation tif = new TuneInformation(null, null, null, 0, 0, null, null);
+                this.XmppClientData.MyTune = tif;
+                this.XmppClientData.TuneText = "Not Playing any music!";
+
+                if (this.xc.Connected)
+                {
+                    this.xc.SetTune(tif);
+                }
+
+                if (this.pingTimer != null)
+                {
+                    this.pingTimer.Dispose();
+                }
+
+                this.pingTimer = null;
+
                 this.xc.Close();
+
+                foreach (Xmpp.BuddiesData xbd in this.BuddiesList)
+                {
+                    try
+                    {
+                        Application.Current.Windows.OfType<OF_ChatWindow>().Single(x => ((Sharp.Xmpp.Jid)x.Tag).GetBareJid() == xbd.Jid.GetBareJid()).Close();
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                this.Close();
             }
             catch (Exception)
             {
             }
-
-            this.Close();
         }
 
         /// <summary>
@@ -730,6 +773,11 @@ namespace OpenFlareClient
                     {
                         this.xc.SetTune(tif);
                     }
+                }
+
+                if (msg == Win32.WMQUERYENDSESSION || msg == Win32.WMENDSESSION)
+                {
+                    this.closeWin = true;
                 }
             }
             catch (Exception)
@@ -1315,6 +1363,119 @@ namespace OpenFlareClient
         }
 
         /// <summary>
+        /// For showing friends status on notification
+        /// </summary>
+        /// <param name="xbd">Buddies data</param>
+        /// <param name="e">StatusEvent args</param>
+        private void ShowFriendsNotify(Xmpp.BuddiesData xbd, Sharp.Xmpp.Im.StatusEventArgs e)
+        {
+            string status = string.Empty;
+            if (xbd.Status != e.Status.Availability.ToString())
+            {
+                if ((Settings.FriendOnlineNotify == true) && (e.Status.Availability != Availability.Offline))
+                {
+                    status = "Status: " + e.Status.Availability.ToString();
+                }
+
+                if ((Settings.FriendOfflineNotify == true) && (e.Status.Availability == Availability.Offline))
+                {
+                    status = "Status: " + e.Status.Availability.ToString();
+                }
+            }
+
+            if (xbd.StatusMessage != e.Status.Message)
+            {
+                if (!e.Status.Message.IsNullOrEmpty())
+                {
+                    if (Settings.StatusMessageNotify == true)
+                    {
+                        if (!status.Contains("Status: "))
+                        {
+                            status += "Status Message: " + e.Status.Message;
+                        }
+                        else
+                        {
+                            status += Environment.NewLine + "Status Message: " + e.Status.Message;
+                        }
+                    }
+                }
+            }
+
+            if (!status.IsNullOrEmpty())
+            {
+                this.OF_TaskbarIcon.ShowBalloonTip("Status Update: " + this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Name, status, this.OF_TaskbarIcon.Icon, true);
+            }
+        }
+
+        /// <summary>
+        /// For showing friends status on notification
+        /// </summary>
+        /// <param name="xbd">Buddies data</param>
+        /// <param name="e">TuneEvent args</param>
+        private void ShowFriendsNotify(Xmpp.BuddiesData xbd, TuneEventArgs e)
+        {
+            string status = string.Empty;
+            if (xbd.MyTune != e.Information)
+            {
+                if ((Settings.FriendTuneNotify == true) && (e.Stop == true))
+                {
+                    status = "Stoped playing!";
+                }
+
+                if ((Settings.FriendTuneNotify == true) && (e.Stop == false))
+                {
+                    status = "Artist: " + e.Information.Artist + Environment.NewLine + "Title: " + e.Information.Title;
+                }
+            }
+
+            if (!status.IsNullOrEmpty())
+            {
+                this.OF_TaskbarIcon.ShowBalloonTip("Tune Update: " + this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Name, status, this.OF_TaskbarIcon.Icon, true);
+            }
+        }
+
+        /// <summary>
+        /// Timer event
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event args</param>
+        private void StatusUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            if (this.listready)
+            {
+                if (this.AllStatusUpdates.Count != 0)
+                {
+                    new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        this.Dispatcher.Invoke((Action)(() =>
+                        {
+                            foreach (Xmpp.StatusUpdateData xsud in this.AllStatusUpdates)
+                            {
+                                if (xsud.DataType == Xmpp.StatusUpdateData.DataTypes.Status)
+                                {
+                                    this.UpdateStatus((Sharp.Xmpp.Im.StatusEventArgs)xsud.Data);
+                                }
+
+                                if (xsud.DataType == Xmpp.StatusUpdateData.DataTypes.UserTune)
+                                {
+                                    this.XC_Tune((TuneEventArgs)xsud.Data);
+                                }
+                            }
+
+                            if (this.statuscount == 3)
+                            {
+                                this.shownotify = true;
+                            }
+
+                            this.AllStatusUpdates.Clear();
+                        }));
+                    }).Start();
+                }
+            }
+        }
+
+        /// <summary>
         /// UpdateStatus for xmpp client
         /// </summary>
         /// <param name="sender">The sender object</param>
@@ -1326,43 +1487,54 @@ namespace OpenFlareClient
                 Thread.CurrentThread.IsBackground = true;
                 this.Dispatcher.Invoke((Action)(() =>
                    {
-                       try
-                       {
-                           if (e.Jid.GetBareJid() != XmppClientData.Jid.GetBareJid())
-                           {
-                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Status = e.Status.Availability.ToString();
-                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
-                               string st = "...";
+                       Xmpp.StatusUpdateData xsud = new Xmpp.StatusUpdateData();
+                       xsud.Data = e;
+                       xsud.Jid = e.Jid;
+                       xsud.DataType = Xmpp.StatusUpdateData.DataTypes.Status;
 
-                               if (!e.Status.Message.IsNullOrEmpty())
-                               {
-                                   st = e.Status.Message;
-                               }
-
-                               this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusMessage = st;
-                           }
-                           else
-                           {
-                               XmppClientData.Status = e.Status.Availability.ToString();
-                               XmppClientData.StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
-                               XmppClientData.StatusMessage = e.Status.Message;
-                           }
-                       }
-                       catch (Exception)
-                       {
-                           if (statuserrs < 100)
-                           {
-                               this.UpdateStatus(sender, e);
-                           }
-                           else
-                           {
-                               throw new System.Exception("Too many errors");
-                               ////Status_Errs = 0;
-                           }
-
-                           statuserrs++;
-                       }
+                       this.AllStatusUpdates.Add(xsud);
                    }));
+            }).Start();
+        }
+
+        /// <summary>
+        /// UpdateStatus for xmpp client
+        /// </summary>
+        /// <param name="e">StatusEvent args</param>
+        private void UpdateStatus(Sharp.Xmpp.Im.StatusEventArgs e)
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    if (e.Jid.GetBareJid() != XmppClientData.Jid.GetBareJid())
+                    {
+                        string st = "...";
+
+                        if (!e.Status.Message.IsNullOrEmpty())
+                        {
+                            st = e.Status.Message;
+                        }
+
+                        if (this.shownotify)
+                        {
+                            ShowFriendsNotify(this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()), e);
+                        }
+
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).Status = e.Status.Availability.ToString();
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
+
+                        this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).StatusMessage = st;
+                    }
+                    else
+                    {
+                        XmppClientData.Status = e.Status.Availability.ToString();
+                        XmppClientData.StatusColor = this.GetFromStringToSCB(e.Status.Availability.ToString());
+                        XmppClientData.StatusMessage = e.Status.Message;
+                        this.statuscount++;
+                    }
+                }));
             }).Start();
         }
 
@@ -1373,7 +1545,15 @@ namespace OpenFlareClient
         /// <param name="e">CancelEvent args</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            this.XClose();
+            if (this.closeWin)
+            {
+                this.CloseAll();
+            }
+            else
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
         }
 
         /// <summary>
@@ -1388,6 +1568,23 @@ namespace OpenFlareClient
             src.AddHook(new HwndSourceHook(this.WindowProc));
             this.LeftToRightMarquee(this.OF_StatusCanvas, this.OF_StatusText);
             this.LeftToRightMarquee(this.OF_TuneCanvas, this.OF_TuneText);
+        }
+
+        /// <summary>
+        /// Event for restoring main window
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event args</param>
+        private void WinShowAndHide(object sender, RoutedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
         }
 
         /// <summary>
@@ -1594,9 +1791,8 @@ namespace OpenFlareClient
         /// <summary>
         /// Tune event for xmpp client
         /// </summary>
-        /// <param name="sender">The sender object</param>
         /// <param name="e">TuneEvent args</param>
-        private void XC_Tune(object sender, TuneEventArgs e)
+        private void XC_Tune(TuneEventArgs e)
         {
             this.Dispatcher.Invoke((Action)(() =>
             {
@@ -1616,6 +1812,11 @@ namespace OpenFlareClient
                         }
 
                         this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()).TuneText = e.Information.Artist + " - " + e.Information.Title;
+
+                        if (this.shownotify)
+                        {
+                            ShowFriendsNotify(this.BuddiesList.Single(j => j.Jid.GetBareJid() == e.Jid.GetBareJid()), e);
+                        }
                     }
                 }
                 catch (Exception)
@@ -1626,18 +1827,25 @@ namespace OpenFlareClient
         }
 
         /// <summary>
-        /// For clearing UserTune
+        /// Tune event for xmpp client
         /// </summary>
-        private void XClose()
+        /// <param name="sender">The sender object</param>
+        /// <param name="e">TuneEvent args</param>
+        private void XC_Tune(object sender, TuneEventArgs e)
         {
-            TuneInformation tif = new TuneInformation(null, null, null, 0, 0, null, null);
-            this.XmppClientData.MyTune = tif;
-            this.XmppClientData.TuneText = "Not Playing any music!";
-
-            if (this.xc.Connected)
+            new Thread(() =>
             {
-                this.xc.SetTune(tif);
-            }
+                Thread.CurrentThread.IsBackground = true;
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Xmpp.StatusUpdateData xsud = new Xmpp.StatusUpdateData();
+                    xsud.Data = e;
+                    xsud.Jid = e.Jid;
+                    xsud.DataType = Xmpp.StatusUpdateData.DataTypes.UserTune;
+
+                    this.AllStatusUpdates.Add(xsud);
+                }));
+            }).Start();
         }
 
         /// <summary>
@@ -1686,6 +1894,8 @@ namespace OpenFlareClient
             {
                 MessageBox.Show(ex.Message);
             }
+
+            this.listready = true;
         }
     }
 }

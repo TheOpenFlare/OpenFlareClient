@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="Settings" Height="327.408" Width="515.073" Icon="{DynamicResource OpenFlareIcon}" Style="{DynamicResource OF_WindowStyle}">
+        Title="Settings" Height="370.408" Width="404.073" Icon="{DynamicResource OpenFlareIcon}" Style="{StaticResource {x:Type Window}}">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CanExecute" Executed="CloseWindow" />
         <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CanResizeWindow" Executed="MaximizeWindow" />
@@ -16,7 +16,7 @@
         <TabControl x:Name="OF_Setting_TabControl" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,46">
             <TabItem x:Name="OF_General" Header="General">
                 <Grid Background="#FF333333">
-                    <GroupBox x:Name="OF_User_GroupBox" Header="User: " VerticalAlignment="Top" Height="107" Margin="10,10,0,0" HorizontalAlignment="Left" Width="351">
+                    <GroupBox x:Name="OF_User_GroupBox" Header="User: " VerticalAlignment="Top" Height="107" Margin="10,10,0,0" HorizontalAlignment="Left" Width="362">
                         <Grid>
                             <TextBox x:Name="OF_UserName_Box" Height="23" Margin="75,13,10,0" TextWrapping="Wrap" Text="{Binding Settings.UserName, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}" VerticalAlignment="Top"/>
                             <PasswordBox x:Name="OF_Pass_Box" Height="23" VerticalAlignment="Top" Margin="75,44,10,0" PasswordChanged="OF_Pass_Box_PasswordChanged"/>
@@ -24,6 +24,15 @@
                             <Label x:Name="OF_Password_Label" Content="Password" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
+                    <GroupBox x:Name="groupBox" Header="Show notifications for :" HorizontalAlignment="Left" Margin="10,122,0,0" VerticalAlignment="Top" Height="115" Width="362">
+                            <Grid>
+                            <CheckBox x:Name="OF_FriendOnline_CheckBox" Content="Friends going online" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.FriendOnlineNotify, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}"/>
+                            <CheckBox x:Name="OF_FriendOffline_CheckBox" Content="Friends going offline" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.FriendOfflineNotify, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}"/>
+                            <CheckBox x:Name="OF_StatusMessage_CheckBox" Content="When friends status message change" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.StatusMessageNotify, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}"/>
+                            <CheckBox x:Name="OF_Tune_CheckBox" Content="When friends tune status change" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.FriendTuneNotify, IsAsync=True, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:OF_SettingsWindow}}, UpdateSourceTrigger=Default}"/>
+                        </Grid>
+                </GroupBox>
+                    
                 </Grid>
             </TabItem>
             <TabItem x:Name="OF_Server" Header="Server">

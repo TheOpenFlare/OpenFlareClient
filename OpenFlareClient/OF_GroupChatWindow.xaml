@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="OF_GroupChatWindow" Height="333.088" Width="600" Loaded="Window_Loaded" Icon="{DynamicResource OpenFlareIcon}">
+        Title="OF_GroupChatWindow" Height="333.088" Width="600" Loaded="Window_Loaded" Icon="{DynamicResource OpenFlareIcon}" Style="{StaticResource {x:Type Window}}">
     <Window.Resources>
         <Style x:Key="TextBlockStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="IsReadOnly" Value="True"/>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenFlareClient"
         mc:Ignorable="d"
-        Title="Chat" Height="343.015" Width="570.221" Icon="{DynamicResource OpenFlareIcon}" Style="{DynamicResource OF_WindowStyle}">
+        Title="Chat" Height="343.015" Width="570.221" Icon="{DynamicResource OpenFlareIcon}" Style="{StaticResource {x:Type Window}}">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CanExecute" Executed="CloseWindow" />
         <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CanResizeWindow" Executed="MaximizeWindow" />
